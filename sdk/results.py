@@ -26,12 +26,12 @@ class Success(Generic[T]):
 
 
 class APIError(Enum):
-    ServerError = "ServerError"
-    UnauthorizedError = "UnauthorizedError"
-    BadArgumentsError = "BadArgumentsError"
-    TooManyRequests = "TooManyRequests"
-    NotFoundError = "NotFoundError"
-    UnknownError = "UnknownError"
+    ServerError = 1, "ServerError"
+    UnauthorizedError = 2, "UnauthorizedError"
+    BadArgumentsError = 3, "BadArgumentsError"
+    TooManyRequests = 4, "TooManyRequests"
+    NotFoundError = 5, "NotFoundError"
+    UnknownError = 6, "UnknownError"
 
 
 class Failure(object):
@@ -65,6 +65,12 @@ class TrackingSnippetResponse(object):
         self.domain = domain
         self.snippet = snippet
 
+    def __str__(self):
+        return f"TrackingSnippetResponse({self.domain}, {self.snippet})"
+
+    def __repr__(self):
+        return self.__str__()
+
 
 class ApiKeyDetails(object):
 
@@ -73,3 +79,9 @@ class ApiKeyDetails(object):
         for permission in permissions:
             assert (isinstance(permission, str))
         self.permissions = permissions
+
+    def __str__(self):
+        return f"ApiKeyDetails({self.permissions})"
+
+    def __repr__(self):
+        return self.__str__()

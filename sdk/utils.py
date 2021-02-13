@@ -1,5 +1,6 @@
-from .results import APIError
 from collections import defaultdict
+
+from .results import APIError
 
 
 class JournyException(Exception):
@@ -14,7 +15,7 @@ class JournyException(Exception):
         return f"JournyException({self.msg})"
 
 
-status_code_to_api_error_mapping = defaultdict(lambda _: APIError.UnknownError)
+status_code_to_api_error_mapping = defaultdict(lambda: APIError.UnknownError)
 status_code_to_api_error_mapping.update({401: APIError.UnauthorizedError,
                                          400: APIError.BadArgumentsError,
                                          429: APIError.TooManyRequests,
@@ -25,4 +26,4 @@ status_code_to_api_error_mapping.update({401: APIError.UnauthorizedError,
 def status_code_to_api_error(status_code: int):
     assert (isinstance(status_code, int))
 
-    return status_code_to_api_error_mapping.get(status_code)
+    return status_code_to_api_error_mapping[status_code]

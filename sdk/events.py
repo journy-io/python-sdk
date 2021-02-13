@@ -1,5 +1,8 @@
-from .utils import JournyException
 from collections import defaultdict
+import datetime
+import json
+
+from .utils import JournyException
 
 
 class Metadata(dict):
@@ -24,6 +27,9 @@ class Metadata(dict):
         self.headers.update(metadata.headers)
         return self
 
+    def __str__(self):
+        return f"Metadata({json.dumps(self.headers)})"
+
 
 class Event(object):
     """
@@ -42,7 +48,8 @@ class Event(object):
         if account_id:
             assert (isinstance(account_id, str))
         if date:
-            assert (isinstance(date, str))
+            assert (isinstance(date, datetime.datetime))
+
         assert (isinstance(metadata, Metadata))
 
         self.name = name
@@ -74,3 +81,9 @@ class Event(object):
         if not account_id or not user_id:
             raise JournyException("user_id and account_id can not be empty!")
         return Event(name, user_id, account_id, None, Metadata())
+
+    def __str__(self):
+        return f"Event({self.name}, {self.user_id}, {self.account_id}, {self.date}, {self.metadata})"
+
+    def __repr__(self):
+        return self.__str__()
