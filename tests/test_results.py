@@ -51,7 +51,7 @@ def test_tracking_snippet_response():
 
     success = Success[TrackingSnippetResponse]("request_id", 100, response)
 
-    assert(success.data.__str__() == response.__str__())
+    assert (success.data.__str__() == response.__str__())
 
 
 def test_api_key_details():
