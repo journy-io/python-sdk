@@ -5,3 +5,4 @@ TODO:
 - [ ] Add requirements.txt
 - [ ] Add documentation (README.md)
 - [ ] Upload to registry
+- [ ] Adapt all asserts to raise JournyException
