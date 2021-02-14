@@ -1,5 +1,6 @@
-import pytest
 from datetime import datetime
+
+import pytest
 
 from sdk.events import Metadata, Event
 from sdk.utils import JournyException
@@ -47,5 +48,5 @@ def test_event():
     with pytest.raises(JournyException):
         Event(None, None, None, None, Metadata())
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         Event("login", 1234, 1234, None, Metadata())

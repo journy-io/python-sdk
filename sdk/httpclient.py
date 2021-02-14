@@ -1,9 +1,10 @@
-import requests
 import json
-from enum import Enum
 from collections import defaultdict
+from enum import Enum
 
-from .utils import JournyException
+import requests
+
+from .utils import JournyException, assert_journy
 
 
 class Method(Enum):
@@ -22,13 +23,13 @@ class HttpHeaders(dict):
         self.headers = defaultdict(lambda _: None)
 
     def __getitem__(self, key: str):
-        if not isinstance(key, str):
-            raise JournyException("The key is not a string.")
+        assert_journy(isinstance(key, str), "The key is not a string.")
+
         return self.headers.get(key.lower().strip())
 
     def __setitem__(self, key: str, value: str or list):
-        if not isinstance(key, str):
-            raise JournyException("The key is not a string.")
+        assert_journy(isinstance(key, str), "The key is not a string.")
+
         if isinstance(value, str) or (isinstance(value, list) and all(isinstance(val, str) for val in value)):
             self.headers.__setitem__(key.lower().strip(), value)
         else:
@@ -51,9 +52,9 @@ class HttpRequest(object):
         if headers is None:
             headers = HttpHeaders()
 
-        assert (isinstance(url, str))
-        assert (isinstance(method, Method))
-        assert (isinstance(headers, HttpHeaders))
+        assert_journy(isinstance(url, str), "The url is not a string.")
+        assert_journy(isinstance(method, Method), "The method is not a Method object.")
+        assert_journy(isinstance(headers, HttpHeaders), "The headers is not a HttpHeaders object.")
 
         self.url = url
         self.method = method
@@ -73,8 +74,8 @@ class HttpResponse(object):
         if headers is None:
             headers = HttpHeaders()
 
-        assert (isinstance(status_code, int))
-        assert (isinstance(headers, HttpHeaders))
+        assert_journy(isinstance(status_code, int), "The status_code is not an int.")
+        assert_journy(isinstance(headers, HttpHeaders), "The url is not a HttpHeaders object.")
 
         if not (100 <= status_code <= 599):
             raise JournyException("Status code is invalid.")
@@ -108,7 +109,7 @@ class HttpClientRequests(HttpClient):
         }
 
     def send(self, request: HttpRequest):
-        assert (isinstance(request, HttpRequest))
+        assert_journy(isinstance(request, HttpRequest), "The request is not an HttpRequest object.")
 
         method = self.methods[request.method]
         if not method:
@@ -133,10 +134,10 @@ class HttpClientTesting(HttpClient):
         self.received_request = None
 
     def send(self, request: HttpRequest):
-        assert (isinstance(request, HttpRequest))
-        assert (isinstance(request.method, Method))
-        assert (isinstance(request.url, str))
-        assert (isinstance(request.headers, HttpHeaders))
+        assert_journy(isinstance(request, HttpRequest), "The request is not an HttpRequest object.")
+        assert_journy(isinstance(request.method, Method), "The method is not an Method object.")
+        assert_journy(isinstance(request.url, str), "The url is not a string.")
+        assert_journy(isinstance(request.headers, HttpHeaders), "The headers is not an HttpHeaders object.")
 
         self.received_request = request
         return self.dummy_response

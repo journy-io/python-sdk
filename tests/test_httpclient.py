@@ -32,11 +32,11 @@ def test_http_request():
 
     assert (request.__str__() == "HttpRequest(https://journy.io, Method.GET, {}, None)")
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         HttpRequest(123, Method.GET, HttpHeaders(), None)
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         HttpRequest("https://journy.io", 123, HttpHeaders(), None)
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         HttpRequest("https://journy.io", Method.GET, 123, None)
 
 
@@ -48,9 +48,9 @@ def test_http_response():
 
     assert (response.__str__() == "HttpResponse(200, {}, None)")
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         HttpResponse("200", HttpHeaders(), None)
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         HttpResponse(200, 213, None)
     with pytest.raises(JournyException):
         HttpResponse(1000, HttpHeaders(), None)
@@ -59,7 +59,7 @@ def test_http_response():
 def test_http_client():
     client = HttpClientRequests()
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         client.send(123)
 
 

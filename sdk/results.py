@@ -1,5 +1,6 @@
-from enum import Enum
 from typing import TypeVar, Generic
+
+from sdk.utils import assert_journy, APIError
 
 T = TypeVar('T')
 
@@ -11,8 +12,8 @@ class Success(Generic[T]):
     """
 
     def __init__(self, request_id: str, calls_remaining: int, data: T):
-        assert (isinstance(request_id, str))
-        assert (isinstance(calls_remaining, int))
+        assert_journy(isinstance(request_id, str), "request_id is not a string.")
+        assert_journy(isinstance(calls_remaining, int), "calls_remaining is not an int")
 
         self.request_id = request_id
         self.calls_remaining = calls_remaining
@@ -25,15 +26,6 @@ class Success(Generic[T]):
         return self.__str__()
 
 
-class APIError(Enum):
-    ServerError = 1, "ServerError"
-    UnauthorizedError = 2, "UnauthorizedError"
-    BadArgumentsError = 3, "BadArgumentsError"
-    TooManyRequests = 4, "TooManyRequests"
-    NotFoundError = 5, "NotFoundError"
-    UnknownError = 6, "UnknownError"
-
-
 class Failure(object):
     """
     Failure object, returned by the client if the call to the API did not succeed.
@@ -41,17 +33,17 @@ class Failure(object):
 
     def __init__(self, request_id: str or None, calls_remaining: int or None, error: APIError):
         if request_id:
-            assert (isinstance(request_id, str))
+            assert_journy(isinstance(request_id, str), "request_id is not a string.")
         if calls_remaining:
-            assert (isinstance(calls_remaining, int))
-        assert (isinstance(error, APIError))
+            assert_journy(isinstance(calls_remaining, int), "calls_remaining is not an int.")
+        assert_journy(isinstance(error, APIError), "error is no APIError object.")
 
         self.request_id = request_id
         self.calls_remaining = calls_remaining
         self.error = error
 
     def __str__(self):
-        return f"Error({self.request_id}, {self.calls_remaining}, {self.error})"
+        return f"Failure({self.request_id}, {self.calls_remaining}, {self.error})"
 
     def __repr__(self):
         return self.__str__()
@@ -60,8 +52,8 @@ class Failure(object):
 class TrackingSnippetResponse(object):
 
     def __init__(self, domain: str, snippet: str):
-        assert (isinstance(domain, str))
-        assert (isinstance(snippet, str))
+        assert_journy(isinstance(domain, str), "The domain is not a string.")
+        assert_journy(isinstance(snippet, str), "The request is not a string.")
         self.domain = domain
         self.snippet = snippet
 
@@ -75,9 +67,9 @@ class TrackingSnippetResponse(object):
 class ApiKeyDetails(object):
 
     def __init__(self, permissions: list):
-        assert (isinstance(permissions, list))
+        assert_journy(isinstance(permissions, list), "Permissions is not a list.")
         for permission in permissions:
-            assert (isinstance(permission, str))
+            assert_journy(isinstance(permission, str), "Permissions is not a list of strings.")
         self.permissions = permissions
 
     def __str__(self):

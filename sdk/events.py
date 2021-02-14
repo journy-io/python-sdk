@@ -1,8 +1,8 @@
-from collections import defaultdict
 import datetime
 import json
+from collections import defaultdict
 
-from .utils import JournyException
+from .utils import JournyException, assert_journy
 
 
 class Metadata(dict):
@@ -11,15 +11,15 @@ class Metadata(dict):
         self.metadata = defaultdict(lambda _: None)
 
     def __getitem__(self, key: str):
-        if not isinstance(key, str):
-            raise JournyException("The key is not a string.")
+        assert_journy(isinstance(key, str), "The key is not a string.")
+
         return self.metadata.get(key.lower().strip())
 
     def __setitem__(self, key: str, value: str or bool or int):
-        if not isinstance(key, str):
-            raise JournyException("The key is not a string.")
+        assert_journy(isinstance(key, str), "The key is not a string.")
+
         if isinstance(value, str) or isinstance(value, int) or isinstance(value, bool):
-            self.metadata.__setitem__(key.lower().strip(), value)  # TODO: thoroughly test this!
+            self.metadata.__setitem__(key.lower().strip(), value)
         else:
             raise JournyException("Value is not a string, number or boolean.")
 
@@ -45,15 +45,16 @@ class Event(object):
         if not name:
             raise JournyException("Event name cannot be empty!")
 
-        assert (isinstance(name, str))
-        if user_id:
-            assert (isinstance(user_id, str))
-        if account_id:
-            assert (isinstance(account_id, str))
-        if date:
-            assert (isinstance(date, datetime.datetime))
+        assert_journy(isinstance(name, str), "The name is not a string.")
 
-        assert (isinstance(metadata, Metadata))
+        if user_id:
+            assert_journy(isinstance(user_id, str), "The user id is not a string.")
+        if account_id:
+            assert_journy(isinstance(account_id, str), "The account id is not a string.")
+        if date:
+            assert_journy(isinstance(date, datetime.datetime), "The date is not a datetime object.")
+
+        assert_journy(isinstance(metadata, Metadata), "The metadata should be a Metadata object")
 
         self.name = name
         self.user_id = user_id
@@ -69,20 +70,17 @@ class Event(object):
 
     @staticmethod
     def for_user(name: str, user_id: str):
-        if not user_id:
-            raise JournyException("user_id can not be empty!")
+        assert_journy(user_id, "user_id can not be empty!")
         return Event(name, user_id, None, None, Metadata())
 
     @staticmethod
     def for_account(name: str, account_id: str):
-        if not account_id:
-            raise JournyException("account_id can not be empty!")
+        assert_journy(account_id, "account_id can not be empty!")
         return Event(name, None, account_id, None, Metadata())
 
     @staticmethod
     def for_user_in_account(name: str, user_id: str, account_id: str):
-        if not account_id or not user_id:
-            raise JournyException("user_id and account_id can not be empty!")
+        assert_journy(account_id and user_id, "user_id and account_id can not be empty!")
         return Event(name, user_id, account_id, None, Metadata())
 
     def __str__(self):
