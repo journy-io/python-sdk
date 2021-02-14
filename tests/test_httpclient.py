@@ -1,11 +1,26 @@
 import pytest
 
-from sdk.httpclient import HttpHeaders, HttpRequest, HttpResponse, HttpClient, Method
+from sdk.httpclient import HttpHeaders, HttpRequest, HttpResponse, HttpClient, Method, HttpClientTesting
 from sdk.utils import JournyException
 
 
 def test_http_headers():
-    pass
+    headers = HttpHeaders()
+    assert (headers["doesnotexist"] is None)
+    headers["doesexist"] = "hallo"
+    assert (headers["doesexist"] is "hallo")
+    headers["thistoo"] = ["a", "b"]
+    assert (headers["thistoo"])
+    with pytest.raises(JournyException):
+        headers[2] = "hallo"
+    with pytest.raises(JournyException):
+        headers["doesexist"] = [2, False]
+    headers2 = HttpHeaders()
+    headers2["new"] = "value"
+    headers.union(headers2)
+    assert (headers["new"] is "value")
+    assert (headers["doesexist"] is "hallo")
+    assert (headers["thistoo"] == ["a", "b"])
 
 
 def test_http_request():
@@ -46,3 +61,14 @@ def test_http_client():
 
     with pytest.raises(AssertionError):
         client.send(123)
+
+
+def test_http_client_testing():
+    dummy_response = HttpResponse(201, HttpHeaders(), {"message": "created"})
+    client = HttpClientTesting(dummy_response)
+
+    dummy_request = HttpRequest("/test", Method.POST, HttpHeaders(), {"object": "hello"})
+    response = client.send(dummy_request)
+
+    assert (response.__str__() == dummy_response.__str__())
+    assert (client.received_request.__str__() == dummy_request.__str__())

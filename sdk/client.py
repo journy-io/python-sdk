@@ -11,20 +11,24 @@ class Properties(dict):
 
     def __init__(self):
         super().__init__()
-        self.headers = defaultdict(lambda _: None)
+        self.properties = defaultdict(lambda _: None)
 
     def __getitem__(self, key: str):
         assert_journy(isinstance(key, str), "The key is not a string.")
 
-        return self.headers.get(key.lower().strip())
+        return self.properties.get(key.lower().strip())
 
     def __setitem__(self, key: str, value: str or list):
         assert_journy(isinstance(key, str), "The key is not a string.")
 
         if isinstance(value, str) or isinstance(value, int) or isinstance(value, bool) or isinstance(value, datetime):
-            self.headers.__setitem__(key.lower().strip(), value)
+            self.properties.__setitem__(key.lower().strip(), value)
         else:
             raise JournyException("Value is not a string, number, boolean or datetime.")
+
+    def union(self, other):
+        self.properties.update(other.properties)
+        return self
 
 
 class Config(object):
