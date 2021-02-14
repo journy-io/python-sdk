@@ -9,9 +9,9 @@ def test_metadata():
     metadata = Metadata()
     assert (metadata["doesnotexist"] is None)
     metadata["doesexist"] = "hallo"
-    assert (metadata["doesexist"] is "hallo")
+    assert (metadata["doesexist"] == "hallo")
     metadata["doesexisttoo"] = 2
-    assert (metadata["doesexisttoo"] is 2)
+    assert (metadata["doesexisttoo"] == 2)
     metadata["thistoo"] = True
     assert (metadata["thistoo"])
     with pytest.raises(JournyException):
@@ -21,8 +21,8 @@ def test_metadata():
     metadata2 = Metadata()
     metadata2["new"] = "value"
     metadata.union(metadata2)
-    assert (metadata2["new"] is "value")
-    assert (metadata["doesexist"] is "hallo")
+    assert (metadata2["new"] == "value")
+    assert (metadata["doesexist"] == "hallo")
     assert (metadata["thistoo"])
 
 

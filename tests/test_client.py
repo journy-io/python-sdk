@@ -26,9 +26,9 @@ def test_properties():
     properties = Properties()
     assert (properties["doesnotexist"] is None)
     properties["doesexist"] = "hallo"
-    assert (properties["doesexist"] is "hallo")
+    assert (properties["doesexist"] == "hallo")
     properties["doesexisttoo"] = 2
-    assert (properties["doesexisttoo"] is 2)
+    assert (properties["doesexisttoo"] == 2)
     properties["thistoo"] = True
     assert (properties["thistoo"])
     with pytest.raises(JournyException):
@@ -38,8 +38,8 @@ def test_properties():
     properties2 = Properties()
     properties2["new"] = "value"
     properties.union(properties2)
-    assert (properties["new"] is "value")
-    assert (properties["doesexist"] is "hallo")
+    assert (properties["new"] == "value")
+    assert (properties["doesexist"] == "hallo")
     assert (properties["thistoo"])
 
 

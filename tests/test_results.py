@@ -7,7 +7,7 @@ def test_success():
     success = Success[None]("request_id", 100, None)
     assert (success.data is None)
     assert (success.request_id == "request_id")
-    assert (success.calls_remaining is 100)
+    assert (success.calls_remaining == 100)
 
     with pytest.raises(AssertionError):
         Success[None](1234, 100, None)
@@ -23,7 +23,7 @@ def test_failure():
     failure2 = Failure("request_id", 100, APIError.UnknownError)
 
     assert (failure2.request_id is "request_id")
-    assert (failure2.calls_remaining is 100)
+    assert (failure2.calls_remaining == 100)
     assert (failure2.error is APIError.UnknownError)
     assert (failure.__str__() == "Error(None, None, APIError.ServerError)")
     assert (failure2.__str__() == "Error(request_id, 100, APIError.UnknownError)")

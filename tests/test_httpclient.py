@@ -8,7 +8,7 @@ def test_http_headers():
     headers = HttpHeaders()
     assert (headers["doesnotexist"] is None)
     headers["doesexist"] = "hallo"
-    assert (headers["doesexist"] is "hallo")
+    assert (headers["doesexist"] == "hallo")
     headers["thistoo"] = ["a", "b"]
     assert (headers["thistoo"])
     with pytest.raises(JournyException):
@@ -18,8 +18,8 @@ def test_http_headers():
     headers2 = HttpHeaders()
     headers2["new"] = "value"
     headers.union(headers2)
-    assert (headers["new"] is "value")
-    assert (headers["doesexist"] is "hallo")
+    assert (headers["new"] == "value")
+    assert (headers["doesexist"] == "hallo")
     assert (headers["thistoo"] == ["a", "b"])
 
 
@@ -43,7 +43,7 @@ def test_http_request():
 def test_http_response():
     response = HttpResponse(200, HttpHeaders(), None)
 
-    assert (response.status_code is 200)
+    assert (response.status_code == 200)
     assert (response.headers == HttpHeaders())
 
     assert (response.__str__() == "HttpResponse(200, {}, None)")
