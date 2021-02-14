@@ -22,7 +22,7 @@ def test_failure():
     failure = Failure(None, None, APIError.ServerError)
     failure2 = Failure("request_id", 100, APIError.UnknownError)
 
-    assert (failure2.request_id is "request_id")
+    assert (failure2.request_id == "request_id")
     assert (failure2.calls_remaining == 100)
     assert (failure2.error is APIError.UnknownError)
     assert (failure.__str__() == "Error(None, None, APIError.ServerError)")
