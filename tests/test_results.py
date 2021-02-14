@@ -26,8 +26,8 @@ def test_failure():
     assert (failure2.request_id is "request_id")
     assert (failure2.calls_remaining is 100)
     assert (failure2.error is APIError.UnknownError)
-    assert (failure.__str__() == "Error(None, None, APIError.ServerError)")
-    assert (failure2.__str__() == "Error(request_id, 100, APIError.UnknownError)")
+    assert (failure.__str__() == "Failure(None, None, APIError.ServerError)")
+    assert (failure2.__str__() == "Failure(request_id, 100, APIError.UnknownError)")
 
     with pytest.raises(JournyException):
         Failure("request_id", "100", APIError.ServerError)

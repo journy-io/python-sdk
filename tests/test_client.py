@@ -5,8 +5,8 @@ import pytest
 from sdk.client import Config, Properties, Client
 from sdk.events import Event, Metadata
 from sdk.httpclient import HttpClientTesting, HttpResponse, HttpHeaders
-from sdk.results import Success, TrackingSnippetResponse, ApiKeyDetails
-from sdk.utils import JournyException
+from sdk.results import Success, TrackingSnippetResponse, ApiKeyDetails, Failure
+from sdk.utils import JournyException, APIError
 
 
 def test_config():
@@ -59,6 +59,7 @@ def test_client():
 rate_limit_header = HttpHeaders()
 rate_limit_header["X-RateLimit-Remaining"] = "4999"
 created_response = HttpResponse(201, rate_limit_header, {"meta": {"requestId": "requestId"}})
+too_many_requests_response = HttpResponse(429, rate_limit_header, {"meta": {"requestId": "requestId"}})
 tracking_snippet_response = HttpResponse(200, rate_limit_header, {"data": {
     "domain": "journy.io",
     "snippet": "<script>snippet</script>",
@@ -100,7 +101,22 @@ def test_client_add_event():
             http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"userId": "user_id", "accountId": "account_id"}, "name": "login", "triggeredAt": "2020-11-02T13:37:40", "metadata": {"true": true, "key": "value"}})')
 
 
-# TODO: Test failures!
+def test_client_add_event_with_failure():
+    http_client_testing = HttpClientTesting(too_many_requests_response)
+    config = Config("api-key", "https://api.journy.io")
+
+    client = Client(http_client_testing, config)
+    response = client.add_event(event)
+
+    assert (isinstance(response, Failure))
+    assert (response.__str__() == "Failure(requestId, 4999, APIError.TooManyRequests)")
+    assert (response.calls_remaining == 4999)
+    assert (response.request_id == "requestId")
+    assert (response.error is APIError.TooManyRequests)
+
+    assert (
+            http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"userId": "user_id", "accountId": "account_id"}, "name": "login", "triggeredAt": "2020-11-02T13:37:40", "metadata": {"true": true, "key": "value"}})')
+
 
 def test_client_upsert_user():
     http_client_testing = HttpClientTesting(created_response)

@@ -43,7 +43,7 @@ class Failure(object):
         self.error = error
 
     def __str__(self):
-        return f"Error({self.request_id}, {self.calls_remaining}, {self.error})"
+        return f"Failure({self.request_id}, {self.calls_remaining}, {self.error})"
 
     def __repr__(self):
         return self.__str__()
