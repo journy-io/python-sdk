@@ -98,7 +98,6 @@ class HttpClient(object):
     def send(self, request: HttpRequest):
         assert_journy(isinstance(request, HttpRequest), "The request is not an HttpRequest object.")
 
-
         method = self.methods[request.method]
         if not method:
             raise JournyException("No correct method was given.")
@@ -122,10 +121,10 @@ class HttpClientTesting(object):
         self.received_request = None
 
     def send(self, request: HttpRequest):
-        assert (isinstance(request, HttpRequest))
-        assert (isinstance(request.method, Method))
-        assert (isinstance(request.url, str))
-        assert (isinstance(request.headers, HttpHeaders))
+        assert_journy(isinstance(request, HttpRequest), "The request is not an HttpRequest object.")
+        assert_journy(isinstance(request.method, Method), "The method is not an Method object.")
+        assert_journy(isinstance(request.url, str), "The url is not a string.")
+        assert_journy(isinstance(request.headers, HttpHeaders), "The headers is not an HttpHeaders object.")
 
         self.received_request = request
         return self.dummy_response
