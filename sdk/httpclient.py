@@ -1,4 +1,5 @@
 import requests
+import json
 from enum import Enum
 from collections import defaultdict
 
@@ -29,13 +30,19 @@ class HttpHeaders(dict):
         if not isinstance(key, str):
             raise JournyException("The key is not a string.")
         if isinstance(value, str) or (isinstance(value, list) and all(isinstance(val, str) for val in value)):
-            self.headers.__setitem__(key.lower().strip(), value)  # TODO: thoroughly test this!
+            self.headers.__setitem__(key.lower().strip(), value)
         else:
             raise JournyException("Value is not a string or a list of strings.")
 
     def union(self, other):
         self.headers.update(other.headers)
         return self
+
+    def __str__(self):
+        return json.dumps(self.headers)
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class HttpRequest(object):
@@ -83,7 +90,12 @@ class HttpResponse(object):
         return self.__str__()
 
 
-class HttpClient(object):
+class HttpClient:
+    def send(self, request: HttpRequest):
+        pass
+
+
+class HttpClientRequests(HttpClient):
 
     def __init__(self):
         self.methods = {
@@ -114,7 +126,7 @@ class HttpClient(object):
         return self.__str__()
 
 
-class HttpClientTesting(object):
+class HttpClientTesting(HttpClient):
 
     def __init__(self, dummy_response: HttpResponse):
         self.dummy_response = dummy_response
@@ -128,3 +140,9 @@ class HttpClientTesting(object):
 
         self.received_request = request
         return self.dummy_response
+
+    def __str__(self):
+        return f"HttpClientTesting({self.dummy_response}, {self.received_request})"
+
+    def __repr__(self):
+        return self.__str__()

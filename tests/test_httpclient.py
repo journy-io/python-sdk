@@ -1,6 +1,6 @@
 import pytest
 
-from sdk.httpclient import HttpHeaders, HttpRequest, HttpResponse, HttpClient, Method, HttpClientTesting
+from sdk.httpclient import HttpHeaders, HttpRequest, HttpResponse, HttpClientRequests, Method, HttpClientTesting
 from sdk.utils import JournyException
 
 
@@ -57,7 +57,7 @@ def test_http_response():
 
 
 def test_http_client():
-    client = HttpClient()
+    client = HttpClientRequests()
 
     with pytest.raises(AssertionError):
         client.send(123)

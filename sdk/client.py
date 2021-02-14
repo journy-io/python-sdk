@@ -1,7 +1,8 @@
+import json
 from collections import defaultdict
 from datetime import datetime
 
-from .httpclient import HttpRequest, Method, HttpClient, HttpResponse
+from .httpclient import HttpRequest, Method, HttpClient, HttpResponse, HttpHeaders
 from .utils import JournyException, status_code_to_api_error
 from .results import Failure, Success, ApiKeyDetails
 from .events import Event
@@ -29,6 +30,12 @@ class Properties(dict):
     def union(self, other):
         self.properties.update(other.properties)
         return self
+
+    def __str__(self):
+        return json.dumps(self.properties)
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class Config(object):
@@ -73,7 +80,10 @@ class Client(object):
         return self.config.root_url + path
 
     def __get_headers(self):
-        return {"x-api-key": self.config.api_key}
+        headers = HttpHeaders()
+        headers["Content-Type"] = "application/json"
+        headers["x-api-key"] = self.config.api_key
+        return headers
 
     @staticmethod
     def __parse_calls_remaining(response: HttpResponse):
@@ -84,27 +94,29 @@ class Client(object):
             return None
 
     def add_event(self, event: Event):
+        assert (isinstance(event, Event))
+
         try:
             request = HttpRequest(self.__create_url("/events"), Method.POST,
-                                  {**self.__get_headers(), "Content-Type": "application/json"},
-                                  {
+                                  self.__get_headers(),
+                                  json.dumps({
                                       "identification": {
                                           "userId": event.user_id,
                                           "accountId": event.account_id
                                       },
                                       "name": event.name,
                                       "triggeredAt": event.date.isoformat() if event.date else None,
-                                      "metadata": event.metadata
-                                  })
+                                      "metadata": event.metadata.metadata
+                                  }))
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
             if not (200 <= response.status_code < 300):
                 return Failure(response.data.meta.requestId, calls_remaining,
                                status_code_to_api_error(response.status_code))
-            return Success[None](response.data.meta.requestId, calls_remaining, None)
+            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
         except JournyException as e:
             raise e
-        except Exception:
+        except Exception as e:
             raise JournyException(f"An unknown error has occurred")
 
     def upsert_user(self, email: str, user_id: str, properties: Properties):
@@ -114,18 +126,18 @@ class Client(object):
 
         try:
             request = HttpRequest(self.__create_url("/users/upsert"), Method.POST,
-                                  {**self.__get_headers(), "Content-Type": "application/json"},
-                                  {
+                                  self.__get_headers(),
+                                  json.dumps({
                                       "email": email,
                                       "userId": user_id,
-                                      "properties": properties
-                                  })
+                                      "properties": properties.properties
+                                  }))
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
             if not (200 <= response.status_code < 300):
                 return Failure(response.data.meta.requestId, calls_remaining,
                                status_code_to_api_error(response.status_code))
-            return Success[None](response.data.meta.requestId, calls_remaining, None)
+            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
         except JournyException as e:
             raise e
         except Exception:
@@ -139,20 +151,20 @@ class Client(object):
             assert (isinstance(member, str))
 
         try:
-            request = HttpRequest(self.__create_url("/users/upsert"), Method.POST,
-                                  {**self.__get_headers(), "Content-Type": "application/json"},
-                                  {
+            request = HttpRequest(self.__create_url("/accounts/upsert"), Method.POST,
+                                  self.__get_headers(),
+                                  json.dumps({
                                       "accountId": account_id,
                                       "name": name,
-                                      "properties": properties,
+                                      "properties": properties.properties,
                                       "members": members
-                                  })
+                                  }))
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
             if not (200 <= response.status_code < 300):
                 return Failure(response.data.meta.requestId, calls_remaining,
                                status_code_to_api_error(response.status_code))
-            return Success[None](response.data.meta.requestId, calls_remaining, None)
+            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
         except JournyException as e:
             raise e
         except Exception:

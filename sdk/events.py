@@ -8,27 +8,30 @@ from .utils import JournyException
 class Metadata(dict):
     def __init__(self):
         super().__init__()
-        self.headers = defaultdict(lambda _: None)
+        self.metadata = defaultdict(lambda _: None)
 
     def __getitem__(self, key: str):
         if not isinstance(key, str):
             raise JournyException("The key is not a string.")
-        return self.headers.get(key.lower().strip())
+        return self.metadata.get(key.lower().strip())
 
     def __setitem__(self, key: str, value: str or bool or int):
         if not isinstance(key, str):
             raise JournyException("The key is not a string.")
         if isinstance(value, str) or isinstance(value, int) or isinstance(value, bool):
-            self.headers.__setitem__(key.lower().strip(), value)  # TODO: thoroughly test this!
+            self.metadata.__setitem__(key.lower().strip(), value)  # TODO: thoroughly test this!
         else:
             raise JournyException("Value is not a string, number or boolean.")
 
     def union(self, metadata):
-        self.headers.update(metadata.headers)
+        self.metadata.update(metadata.metadata)
         return self
 
     def __str__(self):
-        return f"Metadata({json.dumps(self.headers)})"
+        return json.dumps(self.metadata)
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class Event(object):
