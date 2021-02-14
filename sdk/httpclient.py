@@ -28,10 +28,14 @@ class HttpHeaders(dict):
     def __setitem__(self, key: str, value: str or list):
         if not isinstance(key, str):
             raise JournyException("The key is not a string.")
-        if isinstance(value, str) or (isinstance(value, list) and [isinstance(val, str) for val in value]):
+        if isinstance(value, str) or (isinstance(value, list) and all(isinstance(val, str) for val in value)):
             self.headers.__setitem__(key.lower().strip(), value)  # TODO: thoroughly test this!
         else:
             raise JournyException("Value is not a string or a list of strings.")
+
+    def union(self, other):
+        self.headers.update(other.headers)
+        return self
 
 
 class HttpRequest(object):
@@ -108,3 +112,19 @@ class HttpClient(object):
 
     def __repr__(self):
         return self.__str__()
+
+
+class HttpClientTesting(object):
+
+    def __init__(self, dummy_response: HttpResponse):
+        self.dummy_response = dummy_response
+        self.received_request = None
+
+    def send(self, request: HttpRequest):
+        assert (isinstance(request, HttpRequest))
+        assert (isinstance(request.method, Method))
+        assert (isinstance(request.url, str))
+        assert (isinstance(request.headers, HttpHeaders))
+
+        self.received_request = request
+        return self.dummy_response
