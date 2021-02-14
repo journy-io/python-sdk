@@ -1,7 +1,7 @@
 import json
-from urllib import parse
 from collections import defaultdict
 from datetime import datetime
+from urllib import parse
 
 from .events import Event
 from .httpclient import HttpRequest, Method, HttpClient, HttpResponse, HttpHeaders
@@ -10,9 +10,6 @@ from .utils import JournyException, status_code_to_api_error, assert_journy
 
 
 class Properties(dict):
-    """
-    The class for properties objects.
-    """
 
     def __init__(self):
         super().__init__()
@@ -202,7 +199,8 @@ class Client(object):
         assert_journy(isinstance(domain, str), "domain should be a string.")
 
         try:
-            request = HttpRequest(self.__create_url("/tracking/snippet?domain={}".format(parse.quote_plus(domain))), Method.GET,
+            request = HttpRequest(self.__create_url("/tracking/snippet?domain={}".format(parse.quote_plus(domain))),
+                                  Method.GET,
                                   self.__get_headers(), None)
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)

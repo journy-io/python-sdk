@@ -54,6 +54,7 @@ class TrackingSnippetResponse(object):
     def __init__(self, domain: str, snippet: str):
         assert_journy(isinstance(domain, str), "The domain is not a string.")
         assert_journy(isinstance(snippet, str), "The request is not a string.")
+
         self.domain = domain
         self.snippet = snippet
 

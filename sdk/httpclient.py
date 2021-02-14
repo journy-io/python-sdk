@@ -29,11 +29,10 @@ class HttpHeaders(dict):
 
     def __setitem__(self, key: str, value: str or list):
         assert_journy(isinstance(key, str), "The key is not a string.")
-
-        if isinstance(value, str) or (isinstance(value, list) and all(isinstance(val, str) for val in value)):
-            self.headers.__setitem__(key.lower().strip(), value)
-        else:
-            raise JournyException("Value is not a string or a list of strings.")
+        assert_journy(
+            isinstance(value, str) or (isinstance(value, list) and all(isinstance(val, str) for val in value)),
+            "Value is not a string or a list of strings.")
+        self.headers.__setitem__(key.lower().strip(), value)
 
     def union(self, other):
         self.headers.update(other.headers)
@@ -92,6 +91,10 @@ class HttpResponse(object):
 
 
 class HttpClient:
+    """
+    Interface for a HttpClient
+    """
+
     def send(self, request: HttpRequest):
         pass
 

@@ -6,6 +6,7 @@ from .utils import JournyException, assert_journy
 
 
 class Metadata(dict):
+
     def __init__(self):
         super().__init__()
         self.metadata = defaultdict(lambda _: None)
@@ -36,15 +37,13 @@ class Metadata(dict):
 
 class Event(object):
     """
-    TODO: Some usage examples (of static method and happened_at, with_metadata)
-    TODO: Warning to not initialise without static methods
+    Warning: please do create Event objects via the static methods (for_user, for_account, for_user_in_account) and not
+    via the constructor. Not doing using them could lead to problems.
     """
 
     def __init__(self, name: str, user_id: str or None, account_id: str or None, date: str or None,
                  metadata: Metadata):
-        if not name:
-            raise JournyException("Event name cannot be empty!")
-
+        assert_journy(name, "Event name cannot be empty.")
         assert_journy(isinstance(name, str), "The name is not a string.")
 
         if user_id:
