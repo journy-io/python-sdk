@@ -90,7 +90,7 @@ class Client(object):
                                       },
                                       "name": event.name,
                                       "triggeredAt": event.date.isoformat() if event.date else None,
-                                      "metadata": None  # TODO
+                                      "metadata": event.metadata
                                   })
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
@@ -114,7 +114,7 @@ class Client(object):
                                   {
                                       "email": email,
                                       "userId": user_id,
-                                      "properties": None  # TODO
+                                      "properties": properties
                                   })
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
@@ -140,7 +140,7 @@ class Client(object):
                                   {
                                       "accountId": account_id,
                                       "name": name,
-                                      "properties": None,  # TODO
+                                      "properties": properties,
                                       "members": members
                                   })
             response = self.httpclient.send(request)
