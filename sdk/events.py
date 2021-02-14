@@ -2,7 +2,7 @@ from collections import defaultdict
 import datetime
 import json
 
-from .utils import JournyException
+from .utils import JournyException, assert_journy
 
 
 class Metadata(dict):
@@ -11,13 +11,13 @@ class Metadata(dict):
         self.headers = defaultdict(lambda _: None)
 
     def __getitem__(self, key: str):
-        if not isinstance(key, str):
-            raise JournyException("The key is not a string.")
+        assert_journy(isinstance(key, str), "The key is not a string.")
+
         return self.headers.get(key.lower().strip())
 
     def __setitem__(self, key: str, value: str or bool or int):
-        if not isinstance(key, str):
-            raise JournyException("The key is not a string.")
+        assert_journy(isinstance(key, str), "The key is not a string.")
+
         if isinstance(value, str) or isinstance(value, int) or isinstance(value, bool):
             self.headers.__setitem__(key.lower().strip(), value)  # TODO: thoroughly test this!
         else:
@@ -42,13 +42,15 @@ class Event(object):
         if not name:
             raise JournyException("Event name cannot be empty!")
 
-        assert (isinstance(name, str))
+        assert_journy(isinstance(name, str), "The name is not a string.")
+
         if user_id:
-            assert (isinstance(user_id, str))
+            assert_journy(isinstance(user_id, str), "The user id is not a string.")
         if account_id:
-            assert (isinstance(account_id, str))
+            assert_journy(isinstance(account_id, str), "The account id is not a string.")
         if date:
             assert (isinstance(date, datetime.datetime))
+            assert_journy(isinstance(date, datetime.datetime), "The date is not a datetime object.")
 
         assert (isinstance(metadata, Metadata))
 

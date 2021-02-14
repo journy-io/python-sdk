@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import TypeVar, Generic
 
+from sdk.utils import assert_journy
+
 T = TypeVar('T')
 
 
@@ -60,8 +62,8 @@ class Failure(object):
 class TrackingSnippetResponse(object):
 
     def __init__(self, domain: str, snippet: str):
-        assert (isinstance(domain, str))
-        assert (isinstance(snippet, str))
+        assert_journy(isinstance(domain, str), "The domain is not a string.")
+        assert_journy(isinstance(snippet, str), "The request is not a string.")
         self.domain = domain
         self.snippet = snippet
 
@@ -72,10 +74,22 @@ class TrackingSnippetResponse(object):
         return self.__str__()
 
 
+class LinkResponse(object):
+    def __init__(self, message: str):
+        assert_journy(isinstance(message, str), "The message is not a string.")
+        self.message = message
+
+    def __str__(self):
+        return f"LinkResponse({self.message})"
+
+    def __repr__(self):
+        return self.__str__()
+
+
 class ApiKeyDetails(object):
 
     def __init__(self, permissions: list):
-        assert (isinstance(permissions, list))
+        assert_journy(isinstance(permissions, list), "Permissions is not a list.")
         for permission in permissions:
             assert (isinstance(permission, str))
         self.permissions = permissions

@@ -24,6 +24,13 @@ status_code_to_api_error_mapping.update({401: APIError.UnauthorizedError,
 
 
 def status_code_to_api_error(status_code: int):
-    assert (isinstance(status_code, int))
+    assert_journy(isinstance(status_code, int), "The status_code is not an int.")
 
     return status_code_to_api_error_mapping[status_code]
+
+
+def assert_journy(function, message):
+    try:
+        assert function
+    except Exception:
+        raise JournyException(message)
