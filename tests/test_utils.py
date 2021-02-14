@@ -1,7 +1,6 @@
 import pytest
 
-from sdk.results import APIError
-from sdk.utils import JournyException, status_code_to_api_error, assert_journy
+from sdk.utils import JournyException, status_code_to_api_error, assert_journy, APIError
 
 
 def test_journy_exception():
@@ -15,7 +14,7 @@ def test_journy_exception():
 
 
 def test_status_code_to_api_error():
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         raise status_code_to_api_error("status_code")
 
     assert (status_code_to_api_error(200) is APIError.UnknownError)

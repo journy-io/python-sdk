@@ -1,6 +1,7 @@
 import pytest
 
 from sdk.results import Success, Failure, TrackingSnippetResponse, ApiKeyDetails, APIError
+from sdk.utils import JournyException
 
 
 def test_success():
@@ -9,10 +10,10 @@ def test_success():
     assert (success.request_id == "request_id")
     assert (success.calls_remaining is 100)
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         Success[None](1234, 100, None)
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         Success[None]("request_id", "100", None)
 
     assert (success.__str__() == "Success(request_id, 100, None)")
@@ -28,11 +29,11 @@ def test_failure():
     assert (failure.__str__() == "Error(None, None, APIError.ServerError)")
     assert (failure2.__str__() == "Error(request_id, 100, APIError.UnknownError)")
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         Failure("request_id", "100", APIError.ServerError)
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         Failure(100, 100, APIError.ServerError)
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         Failure("request_id", 100, None)
 
 
@@ -44,9 +45,9 @@ def test_tracking_snippet_response():
 
     assert (response.__str__() == "TrackingSnippetResponse(www.journy.io, <div>SNIPPET</div>)")
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         TrackingSnippetResponse(123, "snippet")
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         TrackingSnippetResponse("domain", 123)
 
     success = Success[TrackingSnippetResponse]("request_id", 100, response)
@@ -61,7 +62,7 @@ def test_api_key_details():
 
     assert (details.__str__() == "ApiKeyDetails(['TrackData', 'GetTrackingSnippet'])")
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(JournyException):
         ApiKeyDetails(123)
 
     success = Success[ApiKeyDetails]("request_id", 100, details)

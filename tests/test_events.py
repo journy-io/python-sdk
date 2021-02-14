@@ -1,5 +1,6 @@
-import pytest
 from datetime import datetime
+
+import pytest
 
 from sdk.events import Metadata, Event
 from sdk.utils import JournyException
@@ -38,14 +39,14 @@ def test_event():
     event_3 = Event.for_account("login", "account_id").happened_at(dt)
     event_4 = Event.for_user_in_account("login", "user_id", "account_id").happened_at(dt2).with_metadata(metadata)
 
-    assert (event_1.__str__() == "Event(login, user_id, None, 2020-11-02 13:37:40, Metadata({}))")
-    assert (event_2.__str__() == "Event(logout, user_id, None, 2020-11-02 13:37:50, Metadata({}))")
-    assert (event_3.__str__() == "Event(login, None, account_id, 2020-11-02 13:37:40, Metadata({}))")
+    assert (event_1.__str__() == "Event(login, user_id, None, 2020-11-02 13:37:40, {})")
+    assert (event_2.__str__() == "Event(logout, user_id, None, 2020-11-02 13:37:50, {})")
+    assert (event_3.__str__() == "Event(login, None, account_id, 2020-11-02 13:37:40, {})")
     assert (
-            event_4.__str__() == 'Event(login, user_id, account_id, 2020-11-02 13:37:50, Metadata({"true": true, "key": "value"}))')
+            event_4.__str__() == 'Event(login, user_id, account_id, 2020-11-02 13:37:50, {"true": true, "key": "value"})')
 
     with pytest.raises(JournyException):
         Event(None, None, None, None, Metadata())
 
-    with pytest.raises(AssertionError):  # TODO: This will have to change when changing assert
+    with pytest.raises(JournyException):
         Event("login", 1234, 1234, None, Metadata())
