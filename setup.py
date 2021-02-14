@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="journyio-python-sdk",
+    name="journyio-sdk",
     version="0.0.1",
     author="journy.io",
     author_email="hello@journy.io",
