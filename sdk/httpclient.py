@@ -1,7 +1,6 @@
 import json
 from collections import defaultdict
 from enum import Enum
-
 import requests
 
 from .utils import JournyException, assert_journy
