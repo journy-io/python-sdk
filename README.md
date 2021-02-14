@@ -32,7 +32,7 @@ Go to your settings, under the *Connections*-tab, to create and edit API keys. M
 
 ```python
 from journyio-sdk import HttpClientRequests
-config = Config("api-key-secret", "https://api.journy.io") # second argument is not mandatory, defaults to this
+config = Config("api-key-secret")
 http_client = HttpClientRequests() # If wanted, an own implementation of the HttpClient interface can be created
 client = Client(http_client, config)
 ```
@@ -91,6 +91,29 @@ if isinstance(result, Success):
     print(result.request_id) # str
     print(result.calls_remaining) # int
     print(result.data) # None
+```
+
+To get the cookies you can use:
+
+*Flask*
+
+```python
+@app.route('/...')
+def method():
+    device_id = request.cookies.get('__journey')
+    if device_id:
+        ...
+    ...
+```
+
+*Django*
+
+```python
+def method(request):
+    device_id = request.COOKIES.get('__journey')
+    if device_id:
+        ...
+    ...
 ```
 
 #### Add event
