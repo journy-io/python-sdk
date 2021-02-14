@@ -48,6 +48,7 @@ if isinstance(result, Success):
     print(result.request_id) # str
     print(result.calls_remaining) # int
     print(result.data) # ApiKeyDetails
+    print(result.permissions) # list of strings denoting the permissions
 ```
 
 #### Create or update user
@@ -119,6 +120,8 @@ if isinstance(result, Success):
     print(result.request_id) # str
     print(result.calls_remaining) # int
     print(result.data) # TrackingSnippetResonse
+    print(result.domain) # str
+    print(result.snippet) # str
 ```
 
 ### Handling errors
