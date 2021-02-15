@@ -1,7 +1,7 @@
 import pytest
 
-from sdk.results import Success, Failure, TrackingSnippetResponse, ApiKeyDetails, APIError
-from sdk.utils import JournyException
+from journyio.results import Success, Failure, TrackingSnippetResponse, ApiKeyDetails, APIError
+from journyio.utils import JournyException
 
 
 def test_success():

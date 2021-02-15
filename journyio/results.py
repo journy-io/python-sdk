@@ -1,6 +1,6 @@
 from typing import TypeVar, Generic
 
-from sdk.utils import assert_journy, APIError
+from journyio.utils import assert_journy, APIError
 
 T = TypeVar('T')
 

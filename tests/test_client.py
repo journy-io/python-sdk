@@ -1,12 +1,11 @@
 from datetime import datetime
 
 import pytest
-
-from sdk.client import Config, Properties, Client
-from sdk.events import Event, Metadata
-from sdk.httpclient import HttpClientTesting, HttpResponse, HttpHeaders
-from sdk.results import Success, TrackingSnippetResponse, ApiKeyDetails, Failure
-from sdk.utils import JournyException, APIError
+from journyio.client import Config, Properties, Client
+from journyio.events import Event, Metadata
+from journyio.httpclient import HttpClientTesting, HttpResponse, HttpHeaders
+from journyio.results import Success, TrackingSnippetResponse, ApiKeyDetails, Failure
+from journyio.utils import JournyException, APIError
 
 
 def test_config():
@@ -190,7 +189,7 @@ def test_client_get_tracking_snippet():
 
     assert (isinstance(response, Success))
     assert (
-                response.__str__() == "Success(requestId, 4999, TrackingSnippetResponse(journy.io, <script>snippet</script>))")
+            response.__str__() == "Success(requestId, 4999, TrackingSnippetResponse(journy.io, <script>snippet</script>))")
     assert (response.calls_remaining == 4999)
     assert (response.request_id == "requestId")
     assert (isinstance(response.data, TrackingSnippetResponse))
