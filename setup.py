@@ -7,7 +7,7 @@ setuptools.setup(
     name="journyio-sdk",
     version="0.0.1",
     author="journy.io",
-    author_email="hello@journy.io",
+    author_email="hi@journy.io",
     description="This is the official Python SDK for journy.io.",
     long_description=long_description,
     long_description_content_type="text/markdown",
