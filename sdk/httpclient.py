@@ -74,7 +74,7 @@ class HttpResponse(object):
             headers = HttpHeaders()
 
         assert_journy(isinstance(status_code, int), "The status_code is not an int.")
-        assert_journy(isinstance(headers, HttpHeaders), "The url is not a HttpHeaders object.")
+        assert_journy(isinstance(headers, HttpHeaders), "The headers parameter is not a HttpHeaders object.")
 
         if not (100 <= status_code <= 599):
             raise JournyException("Status code is invalid.")
@@ -119,7 +119,10 @@ class HttpClientRequests(HttpClient):
             raise JournyException("No correct method was given.")
         try:
             response = method(request.url, headers=request.headers, data=request.body)
-            return HttpResponse(response.status_code, response.headers, response.text)
+            headers = HttpHeaders()
+            for header in response.headers:
+                headers[header] = response.headers[header]
+            return HttpResponse(response.status_code, headers, response.text)
         except:
             raise JournyException("An unknown error has occurred while performing the API request.")
 
