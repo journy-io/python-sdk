@@ -2,6 +2,8 @@
 
 # journy.io Python SDK
 
+[![pypi](https://img.shields.io/pypi/v/journyio-sdk?color=%234d84f5&style=flat-square)](https://pypi.org/project/journyio-sdk)
+
 This is the official Python SDK for [journy.io](https://journy.io?utm_source=github&utm_content=readme-python-sdk).
 
 ## 💾 Installation
