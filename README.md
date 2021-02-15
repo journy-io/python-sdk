@@ -35,10 +35,7 @@ Go to your settings, under the *Connections*-tab, to create and edit API keys. M
 to the API Key.
 
 ```python
-from journyio
-
--sdk
-import HttpClientRequests
+from journyio-sdk import HttpClientRequests
 
 config = Config("api-key-secret")
 http_client = HttpClientRequests()  # If wanted, an own implementation of the HttpClient interface can be created
@@ -50,10 +47,7 @@ client = Client(http_client, config)
 #### Get API key details
 
 ```python
-from journyio
-
--sdk
-import Success
+from journyio-sdk import Success
 
 result = client.get_api_key_details()
 if isinstance(result, Success):
@@ -68,10 +62,7 @@ if isinstance(result, Success):
 _Note: when sending an empty value (`""`) as value for a property, the property will be deleted._
 
 ```python
-from journyio
-
--sdk
-import Properties
+from journyio-sdk import Properties
 
 properties = Properties()
 properties["property1"] = "value1"
@@ -138,10 +129,7 @@ def method(request):
 
 ```python
 from datetime import datetime
-from journyio
-
--sdk
-import Event, Metadata
+from journyio-sdk import Event, Metadata
 
 metadata = Metadata()
 metadata["metadata1"] = "value1"
@@ -159,10 +147,7 @@ if isinstance(result, Success):
 #### Get tracking snippet for a domain
 
 ```python
-from journyio
-
--sdk
-import Success
+from journyio-sdk import Success
 
 result = client.get_tracking_snippet("www.journy.io")
 if isinstance(result, Success):
@@ -181,10 +166,7 @@ many requests, not found...). Our SDK only throws `JournyExceptions`, no other e
 called. `JournyExceptions` are provided with useful messages, which state where the error was made.
 
 ```python
-from journyio
-
--sdk
-import JournyException
+from journyio-sdk import JournyException
 
 try:
     result = client.get_tracking_snippet("www.journy.io")
