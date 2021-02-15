@@ -1,7 +1,7 @@
 import pytest
 
-from sdk.httpclient import HttpHeaders, HttpRequest, HttpResponse, HttpClientRequests, Method, HttpClientTesting
-from sdk.utils import JournyException
+from journyio.httpclient import HttpHeaders, HttpRequest, HttpResponse, HttpClientRequests, Method, HttpClientTesting
+from journyio.utils import JournyException
 
 
 def test_http_headers():

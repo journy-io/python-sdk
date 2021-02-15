@@ -1,6 +1,6 @@
 import pytest
 
-from sdk.utils import JournyException, status_code_to_api_error, assert_journy, APIError
+from journyio.utils import JournyException, status_code_to_api_error, assert_journy, APIError
 
 
 def test_journy_exception():

@@ -1,8 +1,8 @@
 from datetime import datetime
-
 import pytest
-from sdk.events import Metadata, Event
-from sdk.utils import JournyException
+
+from journyio.events import Metadata, Event
+from journyio.utils import JournyException
 
 
 def test_metadata():

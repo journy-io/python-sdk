@@ -39,7 +39,7 @@ class Properties(dict):
 
 class Config(object):
     """
-    A config for the Journy.io's python journyio-sdk client.
+    A config for the Journy.io's python journyio client.
     This contains all the necessary information for the client to work properly.
     """
 
@@ -61,7 +61,7 @@ class Config(object):
 
 class Client(object):
     """
-    Journy.io's python journyio-sdk client.
+    Journy.io's python journyio client.
     """
 
     def __init__(self, httpclient: HttpClient, config: Config):
