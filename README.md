@@ -1,4 +1,4 @@
-[![journy.io](banner.png)](https://journy.io/?utm_source=github&utm_content=readme-python-sdk)
+[![journy.io](https://raw.githubusercontent.com/journy-io/python-sdk/main/banner.png?token=AIYSKXPKLRTOT3S4HQDXE2DAGPNL4)](https://journy.io/?utm_source=github&utm_content=readme-python-sdk)
 
 # journy.io Python SDK
 
