@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import pytest
-
 from sdk.events import Metadata, Event
 from sdk.utils import JournyException
 
