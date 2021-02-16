@@ -25,7 +25,7 @@ jobs:
         id: get_version
         run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
       - name: Update version to tag
-        run: sed -i "s/version=\".*\",/version=\"${{ steps.get_version.outputs.tag }}\",/" setup.py
+        run: python scripts/setversion.py setup.py "${{ steps.get_version.outputs.tag }}"
       - name: Publish distribution 📦to PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
