@@ -1,4 +1,5 @@
 from datetime import datetime
+
 import pytest
 
 from journyio.events import Metadata, Event
@@ -42,7 +43,7 @@ def test_event():
     assert (event_2.__str__() == "Event(logout, user_id, None, 2020-11-02 13:37:50, {})")
     assert (event_3.__str__() == "Event(login, None, account_id, 2020-11-02 13:37:40, {})")
     assert (
-            event_4.__str__() == 'Event(login, user_id, account_id, 2020-11-02 13:37:50, {"true": true, "key": "value"})')
+        event_4.__str__() == 'Event(login, user_id, account_id, 2020-11-02 13:37:50, {"true": true, "key": "value"})')
 
     with pytest.raises(JournyException):
         Event(None, None, None, None, Metadata())

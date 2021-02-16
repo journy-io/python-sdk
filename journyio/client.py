@@ -99,15 +99,16 @@ class Client(object):
 
         try:
             body = {
-                "identification": {
-                    "userId": event.user_id,
-                    "accountId": event.account_id
-                },
+                "identification": {},
                 "name": event.name,
                 "metadata": event.metadata.metadata
             }
             if event.date:
                 body["triggeredAt"] = event.date.isoformat()
+            if event.user_id:
+                body["identification"]["userId"] = event.user_id
+            if event.account_id:
+                body["identification"]["accountId"] = event.account_id
 
             request = HttpRequest(self.__create_url("/events"), Method.POST,
                                   self.__get_headers(),
