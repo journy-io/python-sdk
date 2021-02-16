@@ -98,17 +98,21 @@ class Client(object):
         assert_journy(isinstance(event, Event), "The event should be an Event object.")
 
         try:
+            body = {
+                "identification": {},
+                "name": event.name,
+                "metadata": event.metadata.metadata
+            }
+            if event.date:
+                body["triggeredAt"] = event.date.isoformat()
+            if event.user_id:
+                body["identification"]["userId"] = event.user_id
+            if event.account_id:
+                body["identification"]["accountId"] = event.account_id
+
             request = HttpRequest(self.__create_url("/events"), Method.POST,
                                   self.__get_headers(),
-                                  json.dumps({
-                                      "identification": {
-                                          "userId": event.user_id,
-                                          "accountId": event.account_id
-                                      },
-                                      "name": event.name,
-                                      "triggeredAt": event.date.isoformat() if event.date else None,
-                                      "metadata": event.metadata.metadata
-                                  }))
+                                  json.dumps(body))
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
             if not (200 <= response.status_code < 300):
