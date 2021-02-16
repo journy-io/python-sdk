@@ -97,7 +97,7 @@ def test_client_add_event():
     assert (response.data is None)
 
     assert (
-            http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"userId": "user_id", "accountId": "account_id"}, "name": "login", "triggeredAt": "2020-11-02T13:37:40", "metadata": {"true": true, "key": "value"}})')
+            http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"userId": "user_id", "accountId": "account_id"}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})')
 
 
 def test_client_add_event_with_failure():
@@ -114,7 +114,7 @@ def test_client_add_event_with_failure():
     assert (response.error is APIError.TooManyRequests)
 
     assert (
-            http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"userId": "user_id", "accountId": "account_id"}, "name": "login", "triggeredAt": "2020-11-02T13:37:40", "metadata": {"true": true, "key": "value"}})')
+            http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"userId": "user_id", "accountId": "account_id"}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})')
 
 
 def test_client_upsert_user():

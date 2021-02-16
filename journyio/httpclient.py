@@ -118,11 +118,11 @@ class HttpClientRequests(HttpClient):
         if not method:
             raise JournyException("No correct method was given.")
         try:
-            response = method(request.url, headers=request.headers, data=request.body)
+            response = method(request.url, headers=request.headers.headers, data=request.body)
             headers = HttpHeaders()
             for header in response.headers:
                 headers[header] = response.headers[header]
-            return HttpResponse(response.status_code, headers, response.text)
+            return HttpResponse(response.status_code, headers, json.loads(response.text))
         except:
             raise JournyException("An unknown error has occurred while performing the API request.")
 
