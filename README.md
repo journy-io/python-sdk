@@ -136,7 +136,7 @@ from journyio.events import Event, Metadata
 metadata = Metadata()
 metadata["metadata1"] = "value1"
 event = Event()
-    .for_user_in_account("accountName", "userId", "accountId")
+    .for_user_in_account("settings_updated", "userId", "accountId")
     .happened_at(datetime.now())
     .with_metadata(metadata)
 result = client.add_event(event)
