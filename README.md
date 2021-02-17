@@ -20,7 +20,7 @@ pip install journyio-sdk
 
 To start, first import the client.
 
-```pyhton
+```python
 from journyio.client import Client, Config
 ```
 
