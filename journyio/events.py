@@ -3,7 +3,8 @@ import json
 from collections import defaultdict
 
 from .utils import JournyException, assert_journy
-
+from .user_identified import UserIdentified
+from .account_identified import AccountIdentified
 
 class Metadata(dict):
 
@@ -41,49 +42,50 @@ class Event(object):
     via the constructor. Not doing using them could lead to problems.
     """
 
-    def __init__(self, name: str, user_id: str or None, account_id: str or None, date: str or None,
+    def __init__(self, name: str, user: UserIdentified or None, account: AccountIdentified or None, date: str or None,
                  metadata: Metadata):
         assert_journy(name, "Event name cannot be empty.")
         assert_journy(isinstance(name, str), "The name is not a string.")
 
-        if user_id:
-            assert_journy(isinstance(user_id, str), "The user id is not a string.")
-        if account_id:
-            assert_journy(isinstance(account_id, str), "The account id is not a string.")
+        if user:
+            assert_journy(isinstance(user, UserIdentified), "The user is not of type UserIdentified.")
+        if account:
+            assert_journy(isinstance(account, str), "The account is not of type AccountIdentified.")
         if date:
             assert_journy(isinstance(date, datetime.datetime), "The date is not a datetime object.")
 
         assert_journy(isinstance(metadata, Metadata), "The metadata should be a Metadata object")
+        assert_journy(user or account, "User and account can not both be empty.")
 
         self.name = name
-        self.user_id = user_id
-        self.account_id = account_id
+        self.user = user
+        self.account = account
         self.date = date
         self.metadata = metadata
 
     def happened_at(self, date: str):
-        return Event(self.name, self.user_id, self.account_id, date, self.metadata)
+        return Event(self.name, self.user, self.account, date, self.metadata)
 
     def with_metadata(self, metadata: Metadata):
-        return Event(self.name, self.user_id, self.account_id, self.date, self.metadata.union(metadata))
+        return Event(self.name, self.user, self.account, self.date, self.metadata.union(metadata))
 
     @staticmethod
-    def for_user(name: str, user_id: str):
-        assert_journy(user_id, "user_id can not be empty!")
-        return Event(name, user_id, None, None, Metadata())
+    def for_user(name: str, user: UserIdentified):
+        assert_journy(user, "User can not be empty!")
+        return Event(name, user, None, None, Metadata())
 
     @staticmethod
-    def for_account(name: str, account_id: str):
-        assert_journy(account_id, "account_id can not be empty!")
-        return Event(name, None, account_id, None, Metadata())
+    def for_account(name: str, account: AccountIdentified):
+        assert_journy(account, "Account can not be empty!")
+        return Event(name, None, account, None, Metadata())
 
     @staticmethod
-    def for_user_in_account(name: str, user_id: str, account_id: str):
-        assert_journy(account_id and user_id, "user_id and account_id can not be empty!")
-        return Event(name, user_id, account_id, None, Metadata())
+    def for_user_in_account(name: str, user: UserIdentified, account: AccountIdentified):
+        assert_journy(account and user, "User and account can not be empty!")
+        return Event(name, user, account, None, Metadata())
 
     def __str__(self):
-        return f"Event({self.name}, {self.user_id}, {self.account_id}, {self.date}, {self.metadata})"
+        return f"Event({self.name}, {self.user}, {self.account}, {self.date}, {self.metadata})"
 
     def __repr__(self):
         return self.__str__()

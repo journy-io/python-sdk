@@ -3,10 +3,14 @@ from collections import defaultdict
 from datetime import datetime
 from urllib import parse
 
+from typing import List
+
 from .events import Event
 from .httpclient import HttpRequest, Method, HttpClient, HttpResponse, HttpHeaders
 from .results import Failure, Success, ApiKeyDetails, TrackingSnippetResponse
 from .utils import JournyException, status_code_to_api_error, assert_journy
+from .user_identified import UserIdentified
+from .account_identified import AccountIdentified
 
 
 class Properties(dict):
@@ -105,10 +109,10 @@ class Client(object):
             }
             if event.date:
                 body["triggeredAt"] = event.date.isoformat()
-            if event.user_id:
-                body["identification"]["userId"] = event.user_id
-            if event.account_id:
-                body["identification"]["accountId"] = event.account_id
+            if event.user:
+                body["identification"]["user"] = event.user.format_identification()
+            if event.account:
+                body["identification"]["account"] = event.account.format_identification()
 
             request = HttpRequest(self.__create_url("/events"), Method.POST,
                                   self.__get_headers(),
@@ -121,20 +125,18 @@ class Client(object):
             return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
         except JournyException as e:
             raise e
-        except Exception as e:
+        except Exception:
             raise JournyException(f"An unknown error has occurred")
 
-    def upsert_user(self, email: str, user_id: str, properties: Properties) -> Success[None] or Failure:
-        assert_journy(isinstance(email, str), "The email is not a string.")
-        assert_journy(isinstance(user_id, str), "The user id is not a string.")
+    def upsert_user(self, user: UserIdentified, properties: Properties) -> Success[None] or Failure:
+        assert_journy(isinstance(user, UserIdentified), "User is not a UserIdentified object.")
         assert_journy(isinstance(properties, Properties), "Properties is not a Properties object.")
 
         try:
             request = HttpRequest(self.__create_url("/users/upsert"), Method.POST,
                                   self.__get_headers(),
                                   json.dumps({
-                                      "email": email,
-                                      "userId": user_id,
+                                      "identification": user.format_identification(),
                                       "properties": properties.properties
                                   }))
             response = self.httpclient.send(request)
@@ -148,10 +150,9 @@ class Client(object):
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
-    def upsert_account(self, account_id: str, name: str, properties: Properties, members: list) -> Success[
-                                                                                                       None] or Failure:
-        assert_journy(isinstance(account_id, str), "The account id is not a string.")
-        assert_journy(isinstance(name, str), "The name is not a string.")
+    def upsert_account(self, account: AccountIdentified, properties: Properties, members: List[str]) -> Success[
+                                                                                                              None] or Failure:
+        assert_journy(account, "Account is not an AccountIdentified object.")
         assert_journy(isinstance(properties, Properties), "Properties is not a Properties object.")
         for member in members:
             assert_journy(isinstance(member, str), f"Member {member} is not a string.")
@@ -160,8 +161,7 @@ class Client(object):
             request = HttpRequest(self.__create_url("/accounts/upsert"), Method.POST,
                                   self.__get_headers(),
                                   json.dumps({
-                                      "accountId": account_id,
-                                      "name": name,
+                                      "identification": account.format_identification(),
                                       "properties": properties.properties,
                                       "members": members
                                   }))
@@ -176,15 +176,15 @@ class Client(object):
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
-    def link(self, user_id: str, device_id: str) -> Success[None] or Failure:
-        assert_journy(isinstance(user_id, str), "The user id is not a string.")
+    def link(self, user: UserIdentified, device_id: str) -> Success[None] or Failure:
+        assert_journy(isinstance(user, UserIdentified), "The user is not a UserIdentified object.")
         assert_journy(isinstance(device_id, str), "The device id is not a string.")
 
         try:
             request = HttpRequest(self.__create_url("/link"), Method.POST,
                                   self.__get_headers(), json.dumps({
                     "deviceId": device_id,
-                    "userId": user_id
+                    "identification": user.format_identification()
                 }))
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
