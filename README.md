@@ -65,10 +65,17 @@ _Note: when sending an empty value (`""`) as value for a property, the property 
 
 ```python
 from journyio.client import Properties
+from journyio.user_identified import UserIdentified
+
+user = UserIdentified("userId", "name@domain.tld")
+# or
+user = UserIdentified.by_user_id("userId")
+# or
+user = UserIdentified.by_email("name@domain.tld")
 
 properties = Properties()
 properties["property1"] = "value1"
-result = client.upsert_user("name@domain.tld", "userId", properties)
+result = client.upsert_user(user, properties)
 if isinstance(result, Success):
     print(result.request_id)  # str
     print(result.calls_remaining)  # int
@@ -80,10 +87,18 @@ if isinstance(result, Success):
 _Note: when sending an empty value (`""`) as value for a property, the property will be deleted._
 
 ```python
+from journyio.account_identified import AccountIdentified
+
+account = AccountIdentified("accountId", "www.domain.tld")
+# or
+account = AccountIdentified.by_account_id("accountId")
+# or
+account = AccountIdentified.by_domain("www.domain.tld")
+
 properties = Properties()
 properties["property1"] = "value1"
 properties["property2"] = ""  # property2 will be deleted
-result = client.upsert_account("accountId", "accountName", properties, ["memberId1", "memberId2"])
+result = client.upsert_account(account, properties, ["memberId1", "memberId2"])
 if isinstance(result, Success):
     print(result.request_id)  # str
     print(result.calls_remaining)  # int
@@ -97,14 +112,20 @@ snippet sets a cookie named `__journey`. If the cookie exists, you can link the 
 currently logged in:
 
 ```python
-result = client.link("userId", "deviceId")
+user = UserIdentified("userId", "name@domain.tld")
+# or
+user = UserIdentified.by_user_id("userId")
+# or
+user = UserIdentified.by_email("name@domain.tld")
+
+result = client.link(user, "deviceId")
 if isinstance(result, Success):
     print(result.request_id)  # str
     print(result.calls_remaining)  # int
     print(result.data)  # None
 ```
 
-To get the cookies you can use:
+To get the cookies (for the `deviceId`) you can use:
 
 *Flask*
 
@@ -133,10 +154,13 @@ def method(request):
 from datetime import datetime
 from journyio.events import Event, Metadata
 
+account = AccountIdentified("accountId", "www.domain.tld")
+user = UserIdentified("userId", "name@domain.tld")
+
 metadata = Metadata()
 metadata["metadata1"] = "value1"
 event = Event()
-    .for_user_in_account("settings_updated", "userId", "accountId")
+    .for_user_in_account("settings_updated", user, account)
     .happened_at(datetime.now())
     .with_metadata(metadata)
 result = client.add_event(event)
