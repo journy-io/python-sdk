@@ -4,6 +4,8 @@ import pytest
 
 from journyio.events import Metadata, Event
 from journyio.utils import JournyException
+from journyio.user_identified import UserIdentified
+from journyio.account_identified import AccountIdentified
 
 
 def test_metadata():
@@ -34,16 +36,21 @@ def test_event():
 
     dt = datetime.strptime("2020-11-2 13:37:40", "%Y-%m-%d %H:%M:%S")
     dt2 = datetime.strptime("2020-11-2 13:37:50", "%Y-%m-%d %H:%M:%S")
-    event_1 = Event.for_user("login", "user_id").happened_at(dt)
-    event_2 = Event.for_user("logout", "user_id").happened_at(dt2)
-    event_3 = Event.for_account("login", "account_id").happened_at(dt)
-    event_4 = Event.for_user_in_account("login", "user_id", "account_id").happened_at(dt2).with_metadata(metadata)
 
-    assert (event_1.__str__() == "Event(login, user_id, None, 2020-11-02 13:37:40, {})")
-    assert (event_2.__str__() == "Event(logout, user_id, None, 2020-11-02 13:37:50, {})")
-    assert (event_3.__str__() == "Event(login, None, account_id, 2020-11-02 13:37:40, {})")
+    user = UserIdentified("user_id", "email")
+    account = AccountIdentified("account_id", "www.account.be")
+
+    event_1 = Event.for_user("login", user).happened_at(dt)
+    event_2 = Event.for_user("logout", user).happened_at(dt2)
+    event_3 = Event.for_account("login", account).happened_at(dt)
+    event_4 = Event.for_user_in_account("login", user, account).happened_at(dt2).with_metadata(metadata)
+
+    assert (event_1.__str__() == "Event(login, UserIdentified(user_id, email), None, 2020-11-02 13:37:40, {})")
+    assert (event_2.__str__() == "Event(logout, UserIdentified(user_id, email), None, 2020-11-02 13:37:50, {})")
     assert (
-        event_4.__str__() == 'Event(login, user_id, account_id, 2020-11-02 13:37:50, {"true": true, "key": "value"})')
+            event_3.__str__() == "Event(login, None, AccountIdentified(account_id, www.account.be), 2020-11-02 13:37:40, {})")
+    assert (
+        event_4.__str__() == 'Event(login, UserIdentified(user_id, email), AccountIdentified(account_id, www.account.be), 2020-11-02 13:37:50, {"true": true, "key": "value"})')
 
     with pytest.raises(JournyException):
         Event(None, None, None, None, Metadata())

@@ -50,7 +50,7 @@ class Event(object):
         if user:
             assert_journy(isinstance(user, UserIdentified), "The user is not of type UserIdentified.")
         if account:
-            assert_journy(isinstance(account, str), "The account is not of type AccountIdentified.")
+            assert_journy(isinstance(account, AccountIdentified), "The account is not of type AccountIdentified.")
         if date:
             assert_journy(isinstance(date, datetime.datetime), "The date is not a datetime object.")
 

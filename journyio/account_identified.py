@@ -28,7 +28,7 @@ class AccountIdentified(object):
         return AccountIdentified(account_id, None)
 
     @staticmethod
-    def by_email(domain: str):
+    def by_domain(domain: str):
         assert_journy(domain, "Domain can not be empty!")
         return AccountIdentified(None, domain)
 
