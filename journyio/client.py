@@ -152,7 +152,7 @@ class Client(object):
 
     def upsert_account(self, account: AccountIdentified, properties: Properties, members: List[str]) -> Success[
                                                                                                               None] or Failure:
-        assert_journy(account, "Account is not an AccountIdentified object.")
+        assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
         assert_journy(isinstance(properties, Properties), "Properties is not a Properties object.")
         for member in members:
             assert_journy(isinstance(member, str), f"Member {member} is not a string.")
