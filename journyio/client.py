@@ -156,7 +156,7 @@ class Client(object):
         assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
         assert_journy(isinstance(properties, Properties), "Properties is not a Properties object.")
         for member in members:
-            assert_journy(isinstance(member, UserIdentified), f"Member {member} is not a string.")
+            assert_journy(isinstance(member, UserIdentified), f"Member {member} is not a UserIdentified object.")
 
         try:
             request = HttpRequest(self.__create_url("/accounts/upsert"), Method.POST,
