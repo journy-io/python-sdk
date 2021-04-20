@@ -12,7 +12,6 @@ from .utils import JournyException, status_code_to_api_error, assert_journy
 from .user_identified import UserIdentified
 from .account_identified import AccountIdentified
 
-
 class Properties(dict):
 
     def __init__(self):

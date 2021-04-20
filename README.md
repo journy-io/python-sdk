@@ -88,6 +88,7 @@ _Note: when sending an empty value (`""`) as value for a property, the property 
 
 ```python
 from journyio.account_identified import AccountIdentified
+from datetime import datetime
 
 account = AccountIdentified("accountId", "www.domain.tld")
 # or
@@ -96,8 +97,12 @@ account = AccountIdentified.by_account_id("accountId")
 account = AccountIdentified.by_domain("www.domain.tld")
 
 properties = Properties()
-properties["property1"] = "value1"
-properties["property2"] = ""  # property2 will be deleted
+properties["name"] = "ACME, Inc"
+properties["is_paying_account"] = True
+properties["mrr"] = 399
+properties["plan"] = "Pro"
+properties["registered_at"] = datetime.now()
+properties["this_property_will_be_deleted"] = ""
 result = client.upsert_account(account, properties, ["memberId1", "memberId2"])
 if isinstance(result, Success):
     print(result.request_id)  # str
