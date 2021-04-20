@@ -7,6 +7,8 @@ from journyio.events import Event, Metadata
 from journyio.httpclient import HttpClientTesting, HttpResponse, HttpHeaders
 from journyio.results import Success, TrackingSnippetResponse, ApiKeyDetails, Failure
 from journyio.utils import JournyException, APIError
+from journyio.user_identified import UserIdentified
+from journyio.account_identified import AccountIdentified
 
 
 def test_config():
@@ -81,7 +83,9 @@ metadata = Metadata()
 metadata["true"] = True
 metadata["key"] = "value"
 dt = datetime.strptime("2020-11-2 13:37:40", "%Y-%m-%d %H:%M:%S")
-event = Event.for_user_in_account("login", "user_id", "account_id").happened_at(dt).with_metadata(metadata)
+user = UserIdentified("user_id", "user@journy.io")
+account = AccountIdentified("account_id", "www.journy.io")
+event = Event.for_user_in_account("login", user, account).happened_at(dt).with_metadata(metadata)
 
 
 def test_client_add_event():
@@ -98,7 +102,7 @@ def test_client_add_event():
     assert (response.data is None)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"userId": "user_id", "accountId": "account_id"}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"user": {"email": "user@journy.io", "userId": "user_id"}, "account": {"domain": "www.journy.io", "accountId": "account_id"}}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})')
 
 
 def test_client_add_event_with_failure():
@@ -115,7 +119,7 @@ def test_client_add_event_with_failure():
     assert (response.error is APIError.TooManyRequests)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"userId": "user_id", "accountId": "account_id"}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"user": {"email": "user@journy.io", "userId": "user_id"}, "account": {"domain": "www.journy.io", "accountId": "account_id"}}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})')
 
 
 def test_client_upsert_user():
@@ -128,7 +132,7 @@ def test_client_upsert_user():
     properties["hasDog"] = False
     properties["name"] = "Manu"
 
-    response = client.upsert_user("manu@journy.io", "userId", properties)
+    response = client.upsert_user(user, properties)
 
     assert (isinstance(response, Success))
     assert (response.__str__() == "Success(requestId, 4999, None)")
@@ -137,7 +141,7 @@ def test_client_upsert_user():
     assert (response.data is None)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/users/upsert, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"email": "manu@journy.io", "userId": "userId", "properties": {"hasdog": false, "name": "Manu"}})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/users/upsert, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"email": "user@journy.io", "userId": "user_id"}, "properties": {"hasdog": false, "name": "Manu"}})')
 
 
 def test_client_upsert_account():
@@ -150,7 +154,7 @@ def test_client_upsert_account():
     properties["haveDog"] = False
     properties["name"] = "Journy"
 
-    response = client.upsert_account("accountId", "journy", properties, ["hansId", "manuId"])
+    response = client.upsert_account(account, properties, ["hansId", "manuId"])
 
     assert (isinstance(response, Success))
     assert (response.__str__() == "Success(requestId, 4999, None)")
@@ -159,7 +163,7 @@ def test_client_upsert_account():
     assert (response.data is None)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/upsert, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"accountId": "accountId", "name": "journy", "properties": {"havedog": false, "name": "Journy"}, "members": ["hansId", "manuId"]})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/upsert, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"domain": "www.journy.io", "accountId": "account_id"}, "properties": {"havedog": false, "name": "Journy"}, "members": ["hansId", "manuId"]})')
 
 
 def test_client_link():
@@ -168,7 +172,7 @@ def test_client_link():
 
     client = Client(http_client_testing, config)
 
-    response = client.link("user_id", "device_id")
+    response = client.link(user, "device_id")
 
     assert (isinstance(response, Success))
     assert (response.__str__() == "Success(requestId, 4999, None)")
@@ -177,7 +181,7 @@ def test_client_link():
     assert (response.data is None)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/link, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"deviceId": "device_id", "userId": "user_id"})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/link, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"deviceId": "device_id", "identification": {"email": "user@journy.io", "userId": "user_id"}})')
 
 
 def test_client_get_tracking_snippet():
