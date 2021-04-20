@@ -103,7 +103,11 @@ properties["mrr"] = 399
 properties["plan"] = "Pro"
 properties["registered_at"] = datetime.now()
 properties["this_property_will_be_deleted"] = ""
-result = client.upsert_account(account, properties, ["memberId1", "memberId2"])
+
+member1 = UserIdentified.by_user_id("memberId1")
+member2 = UserIdentified.by_user_id("memberId2")
+
+result = client.upsert_account(account, properties, [member1, member2])
 if isinstance(result, Success):
     print(result.request_id)  # str
     print(result.calls_remaining)  # int

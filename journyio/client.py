@@ -12,6 +12,7 @@ from .utils import JournyException, status_code_to_api_error, assert_journy
 from .user_identified import UserIdentified
 from .account_identified import AccountIdentified
 
+
 class Properties(dict):
 
     def __init__(self):
@@ -149,12 +150,13 @@ class Client(object):
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
-    def upsert_account(self, account: AccountIdentified, properties: Properties, members: List[str]) -> Success[
-                                                                                                              None] or Failure:
+    def upsert_account(self, account: AccountIdentified, properties: Properties, members: List[UserIdentified]) -> \
+        Success[
+            None] or Failure:
         assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
         assert_journy(isinstance(properties, Properties), "Properties is not a Properties object.")
         for member in members:
-            assert_journy(isinstance(member, str), f"Member {member} is not a string.")
+            assert_journy(isinstance(member, UserIdentified), f"Member {member} is not a string.")
 
         try:
             request = HttpRequest(self.__create_url("/accounts/upsert"), Method.POST,
@@ -162,7 +164,8 @@ class Client(object):
                                   json.dumps({
                                       "identification": account.format_identification(),
                                       "properties": properties.properties,
-                                      "members": members
+                                      "members": [{"identification": member.format_identification()} for member in
+                                                  members]
                                   }))
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
