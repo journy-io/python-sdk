@@ -61,7 +61,7 @@ if isinstance(result, Success):
 
 #### Create or update user
 
-_Note: when sending an empty value (`""`) as value for a property, the property will be deleted._
+Note: `full_name`, `first_name`, `last_name`, `phone` and `registered_at` are default properties
 
 ```python
 from journyio.client import Properties
@@ -74,7 +74,13 @@ user = UserIdentified.by_user_id("userId")
 user = UserIdentified.by_email("name@domain.tld")
 
 properties = Properties()
-properties["property1"] = "value1"
+properties["full_name"] = "John Doe"
+properties["first_name"] = "John"
+properties["last_name"] = "Doe"
+properties["phone"] = "123"
+properties["registered_at"] = datetime.now()
+properties["is_admin"] = True
+
 result = client.upsert_user(user, properties)
 if isinstance(result, Success):
     print(result.request_id)  # str
@@ -84,7 +90,7 @@ if isinstance(result, Success):
 
 #### Create or update account
 
-_Note: when sending an empty value (`""`) as value for a property, the property will be deleted._
+Note: `name`, `mrr`, `plan` and `registered_at` are default properties
 
 ```python
 from journyio.account_identified import AccountIdentified
@@ -98,11 +104,10 @@ account = AccountIdentified.by_domain("www.domain.tld")
 
 properties = Properties()
 properties["name"] = "ACME, Inc"
-properties["is_paying_account"] = True
 properties["mrr"] = 399
 properties["plan"] = "Pro"
 properties["registered_at"] = datetime.now()
-properties["this_property_will_be_deleted"] = ""
+properties["is_paying"] = True
 
 member1 = UserIdentified.by_user_id("memberId1")
 member2 = UserIdentified.by_user_id("memberId2")
