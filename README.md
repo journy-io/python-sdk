@@ -94,6 +94,7 @@ Note: `name`, `mrr`, `plan` and `registered_at` are default properties
 
 ```python
 from journyio.account_identified import AccountIdentified
+from journyio.user_identified import UserIdentified
 from datetime import datetime
 
 account = AccountIdentified("accountId", "www.domain.tld")
@@ -126,6 +127,8 @@ snippet sets a cookie named `__journey`. If the cookie exists, you can link the 
 currently logged in:
 
 ```python
+from journyio.user_identified import UserIdentified
+
 user = UserIdentified("userId", "name@domain.tld")
 # or
 user = UserIdentified.by_user_id("userId")
@@ -167,6 +170,8 @@ def method(request):
 ```python
 from datetime import datetime
 from journyio.events import Event, Metadata
+from journyio.account_identified import AccountIdentified
+from journyio.user_identified import UserIdentified
 
 account = AccountIdentified("accountId", "www.domain.tld")
 user = UserIdentified("userId", "name@domain.tld")
