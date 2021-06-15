@@ -102,7 +102,9 @@ properties["is_paying_account"] = True
 properties["mrr"] = 399
 properties["plan"] = "Pro"
 properties["registered_at"] = datetime.now()
-properties["this_property_will_be_deleted"] = ""
+properties["empty_property"] = ""
+properties["previous_plans"] = ["Free", "Business"]
+properties["this_property_will_be_deleted"] = None
 result = client.upsert_account(account, properties, ["memberId1", "memberId2"])
 if isinstance(result, Success):
     print(result.request_id)  # str
