@@ -9,6 +9,8 @@ class APIError(Enum):
     TooManyRequests = 4, "TooManyRequests"
     NotFoundError = 5, "NotFoundError"
     UnknownError = 6, "UnknownError"
+    ForbiddenError = 7, "ForbiddenError"
+    UnprocessableError = 8, "Unprocessable"
 
 
 class JournyException(Exception):
@@ -24,10 +26,12 @@ class JournyException(Exception):
 
 
 status_code_to_api_error_mapping = defaultdict(lambda: APIError.UnknownError)
-status_code_to_api_error_mapping.update({401: APIError.UnauthorizedError,
-                                         400: APIError.BadArgumentsError,
-                                         429: APIError.TooManyRequests,
+status_code_to_api_error_mapping.update({400: APIError.BadArgumentsError,
+                                         401: APIError.UnauthorizedError,
+                                         403: APIError.ForbiddenError,
                                          404: APIError.NotFoundError,
+                                         422: APIError.Unprocessable,
+                                         429: APIError.TooManyRequests,
                                          500: APIError.ServerError})
 
 
