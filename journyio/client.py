@@ -22,12 +22,18 @@ class Properties(dict):
         assert_journy(isinstance(key, str), "The key is not a string.")
         return self.properties.get(key.lower().strip())
 
-    def __setitem__(self, key: str, value: str or list):
+    def a(self, a: str):
+        pass
+
+    def __setitem__(self, key: str, value: str or List[str] or bool or int or datetime or None):
         assert_journy(isinstance(key, str), "The key is not a string.")
-        if isinstance(value, str) or isinstance(value, int) or isinstance(value, bool) or isinstance(value, datetime):
+        if isinstance(value, str) or isinstance(value, int) or isinstance(value, bool) or isinstance(value, datetime) \
+                or value is None or (isinstance(value, list) and all([isinstance(el, str) for el in value])):
+            if isinstance(value, datetime):
+                value = str(value.isoformat())
             self.properties.__setitem__(key.lower().strip(), value)
         else:
-            raise JournyException("Value is not a string, number, boolean or datetime.")
+            raise JournyException("Value is not a string, number, boolean, datetime or None.")
 
     def union(self, other):
         self.properties.update(other.properties)
