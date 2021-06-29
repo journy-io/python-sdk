@@ -22,9 +22,6 @@ class Properties(dict):
         assert_journy(isinstance(key, str), "The key is not a string.")
         return self.properties.get(key.lower().strip())
 
-    def a(self, a: str):
-        pass
-
     def __setitem__(self, key: str, value: str or List[str] or bool or int or datetime or None):
         assert_journy(isinstance(key, str), "The key is not a string.")
         if isinstance(value, str) or isinstance(value, int) or isinstance(value, bool) or isinstance(value, datetime) \
