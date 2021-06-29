@@ -61,40 +61,18 @@ if isinstance(result, Success):
 
 #### Create or update user
 
-_Note: when sending an empty value (`""`) as value for a property, the property will be deleted._
+Note: `full_name`, `first_name`, `last_name`, `phone` and `registered_at` are default properties
 
 ```python
 from journyio.client import Properties
 from journyio.user_identified import UserIdentified
+from datetime import datetime
 
 user = UserIdentified("userId", "name@domain.tld")
 # or
 user = UserIdentified.by_user_id("userId")
 # or
 user = UserIdentified.by_email("name@domain.tld")
-
-properties = Properties()
-properties["property1"] = "value1"
-result = client.upsert_user(user, properties)
-if isinstance(result, Success):
-    print(result.request_id)  # str
-    print(result.calls_remaining)  # int
-    print(result.data)  # None
-```
-
-#### Create or update account
-
-_Note: when sending an empty value (`""`) as value for a property, the property will be deleted._
-
-```python
-from journyio.account_identified import AccountIdentified
-from datetime import datetime
-
-account = AccountIdentified("accountId", "www.domain.tld")
-# or
-account = AccountIdentified.by_account_id("accountId")
-# or
-account = AccountIdentified.by_domain("www.domain.tld")
 
 properties = Properties()
 properties["full_name"] = "John Doe"
@@ -107,7 +85,43 @@ properties["age"] = 26
 properties["array_of_values"] = ["value1", "value2"]
 properties["key_with_empty_value"] = ""
 properties["this_property_will_be_deleted"] = None
-result = client.upsert_account(account, properties, ["memberId1", "memberId2"])
+
+result = client.upsert_user(user, properties)
+if isinstance(result, Success):
+    print(result.request_id)  # str
+    print(result.calls_remaining)  # int
+    print(result.data)  # None
+```
+
+#### Create or update account
+
+Note: `name`, `mrr`, `plan` and `registered_at` are default properties
+
+```python
+from journyio.account_identified import AccountIdentified
+from journyio.user_identified import UserIdentified
+from datetime import datetime
+
+account = AccountIdentified("accountId", "www.domain.tld")
+# or
+account = AccountIdentified.by_account_id("accountId")
+# or
+account = AccountIdentified.by_domain("www.domain.tld")
+
+properties = Properties()
+properties["name"] = "ACME, Inc"
+properties["mrr"] = 399
+properties["plan"] = "Pro"
+properties["registered_at"] = datetime.now()
+properties["is_paying"] = True
+properties["array_of_values"] = ["value1", "value2"]
+properties["key_with_empty_value"] = ""
+properties["this_property_will_be_deleted"] = None
+
+member1 = UserIdentified.by_user_id("memberId1")
+member2 = UserIdentified.by_user_id("memberId2")
+
+result = client.upsert_account(account, properties, [member1, member2])
 if isinstance(result, Success):
     print(result.request_id)  # str
     print(result.calls_remaining)  # int
@@ -121,6 +135,8 @@ snippet sets a cookie named `__journey`. If the cookie exists, you can link the 
 currently logged in:
 
 ```python
+from journyio.user_identified import UserIdentified
+
 user = UserIdentified("userId", "name@domain.tld")
 # or
 user = UserIdentified.by_user_id("userId")
@@ -162,6 +178,8 @@ def method(request):
 ```python
 from datetime import datetime
 from journyio.events import Event, Metadata
+from journyio.account_identified import AccountIdentified
+from journyio.user_identified import UserIdentified
 
 account = AccountIdentified("accountId", "www.domain.tld")
 user = UserIdentified("userId", "name@domain.tld")
