@@ -97,13 +97,15 @@ account = AccountIdentified.by_account_id("accountId")
 account = AccountIdentified.by_domain("www.domain.tld")
 
 properties = Properties()
-properties["name"] = "ACME, Inc"
-properties["is_paying_account"] = True
-properties["mrr"] = 399
-properties["plan"] = "Pro"
+properties["full_name"] = "John Doe"
+properties["first_name"] = "John"
+properties["last_name"] = "Doe"
+properties["phone"] = "123"
+properties["is_admin"] = True
 properties["registered_at"] = datetime.now()
-properties["empty_property"] = ""
-properties["previous_plans"] = ["Free", "Business"]
+properties["age"] = 26
+properties["array_of_values"] = ["value1", "value2"]
+properties["key_with_empty_value"] = ""
 properties["this_property_will_be_deleted"] = None
 result = client.upsert_account(account, properties, ["memberId1", "memberId2"])
 if isinstance(result, Success):
