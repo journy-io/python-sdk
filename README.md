@@ -66,6 +66,7 @@ Note: `full_name`, `first_name`, `last_name`, `phone` and `registered_at` are de
 ```python
 from journyio.client import Properties
 from journyio.user_identified import UserIdentified
+from datetime import datetime
 
 user = UserIdentified("userId", "name@domain.tld")
 # or
@@ -78,8 +79,12 @@ properties["full_name"] = "John Doe"
 properties["first_name"] = "John"
 properties["last_name"] = "Doe"
 properties["phone"] = "123"
-properties["registered_at"] = datetime.now()
 properties["is_admin"] = True
+properties["registered_at"] = datetime.now()
+properties["age"] = 26
+properties["array_of_values"] = ["value1", "value2"]
+properties["key_with_empty_value"] = ""
+properties["this_property_will_be_deleted"] = None
 
 result = client.upsert_user(user, properties)
 if isinstance(result, Success):
@@ -109,6 +114,9 @@ properties["mrr"] = 399
 properties["plan"] = "Pro"
 properties["registered_at"] = datetime.now()
 properties["is_paying"] = True
+properties["array_of_values"] = ["value1", "value2"]
+properties["key_with_empty_value"] = ""
+properties["this_property_will_be_deleted"] = None
 
 member1 = UserIdentified.by_user_id("memberId1")
 member2 = UserIdentified.by_user_id("memberId2")

@@ -33,6 +33,8 @@ def test_properties():
     properties["doesexisttoo"] = 2
     assert (properties["doesexisttoo"] == 2)
     properties["thistoo"] = True
+    properties["will_be_deleted"] = None
+    properties["array_of_values"] = ["first_value", "second_value"]
     assert (properties["thistoo"])
     with pytest.raises(JournyException):
         properties[2] = "hallo"
