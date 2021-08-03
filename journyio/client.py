@@ -181,6 +181,56 @@ class Client(object):
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
+    def add_users_to_account(self, account: AccountIdentified, users: List[UserIdentified]) -> \
+        Success[
+            None] or Failure:
+        assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
+        for user in users:
+            assert_journy(isinstance(user, UserIdentified), f"User {user} is not a UserIdentified object.")
+
+        try:
+            request = HttpRequest(self.__create_url("/accounts/users/add"), Method.POST,
+                                  self.__get_headers(),
+                                  json.dumps({
+                                      "account": account.format_identification(),
+                                      "users": [user.format_identification() for user in users]
+                                  }))
+            response = self.httpclient.send(request)
+            calls_remaining = Client.__parse_calls_remaining(response)
+            if not (200 <= response.status_code < 300):
+                return Failure(response.body["meta"]["requestId"], calls_remaining,
+                               status_code_to_api_error(response.status_code))
+            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
+        except JournyException as e:
+            raise e
+        except Exception:
+            raise JournyException(f"An unknown error has occurred")
+
+    def remove_users_from_account(self, account: AccountIdentified, users: List[UserIdentified]) -> \
+        Success[
+            None] or Failure:
+        assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
+        for user in users:
+            assert_journy(isinstance(user, UserIdentified), f"User {user} is not a UserIdentified object.")
+
+        try:
+            request = HttpRequest(self.__create_url("/accounts/users/remove"), Method.POST,
+                                  self.__get_headers(),
+                                  json.dumps({
+                                      "account": account.format_identification(),
+                                      "users": [user.format_identification() for user in users]
+                                  }))
+            response = self.httpclient.send(request)
+            calls_remaining = Client.__parse_calls_remaining(response)
+            if not (200 <= response.status_code < 300):
+                return Failure(response.body["meta"]["requestId"], calls_remaining,
+                               status_code_to_api_error(response.status_code))
+            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
+        except JournyException as e:
+            raise e
+        except Exception:
+            raise JournyException(f"An unknown error has occurred")
+
     def link(self, user: UserIdentified, device_id: str) -> Success[None] or Failure:
         assert_journy(isinstance(user, UserIdentified), "The user is not a UserIdentified object.")
         assert_journy(isinstance(device_id, str), "The device id is not a string.")

@@ -170,6 +170,46 @@ def test_client_upsert_account():
     assert (
         http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/upsert, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"domain": "www.journy.io", "accountId": "account_id"}, "properties": {"havedog": false, "name": "Journy"}, "members": [{"identification": {"userId": "hansId"}}, {"identification": {"userId": "manuId"}}]})')
 
+def test_client_add_users_to_account():
+    http_client_testing = HttpClientTesting(created_response)
+    config = Config("api-key", "https://api.journy.io")
+
+    client = Client(http_client_testing, config)
+
+    user1 = UserIdentified.by_user_id("hansId")
+    user2 = UserIdentified.by_email("manu@journy.io")
+
+    response = client.add_users_to_account(account, [user1, user2])
+
+    assert (isinstance(response, Success))
+    assert (response.__str__() == "Success(requestId, 4999, None)")
+    assert (response.calls_remaining == 4999)
+    assert (response.request_id == "requestId")
+    assert (response.data is None)
+
+    assert (
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/users/add, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"account": {"domain": "www.journy.io", "accountId": "account_id"}, "users": [{"userId": "hansId"}, {"email": "manu@journy.io"}]})')
+
+def test_client_remove_users_from_account():
+    http_client_testing = HttpClientTesting(created_response)
+    config = Config("api-key", "https://api.journy.io")
+
+    client = Client(http_client_testing, config)
+
+    user1 = UserIdentified.by_user_id("hansId")
+    user2 = UserIdentified.by_email("manu@journy.io")
+
+    response = client.remove_users_from_account(account, [user1, user2])
+
+    assert (isinstance(response, Success))
+    assert (response.__str__() == "Success(requestId, 4999, None)")
+    assert (response.calls_remaining == 4999)
+    assert (response.request_id == "requestId")
+    assert (response.data is None)
+
+    assert (
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/users/remove, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"account": {"domain": "www.journy.io", "accountId": "account_id"}, "users": [{"userId": "hansId"}, {"email": "manu@journy.io"}]})')
+
 
 def test_client_link():
     http_client_testing = HttpClientTesting(created_response)
