@@ -128,6 +128,47 @@ if isinstance(result, Success):
     print(result.data)  # None
 ```
 
+#### Add user(s) to an account
+
+```python
+from journyio.account_identified import AccountIdentified
+from journyio.user_identified import UserIdentified
+
+account = AccountIdentified.by_account_id("accountId")
+
+user1 = UserIdentified.by_user_id("memberId1")
+user2 = UserIdentified.by_email("member2@domain.tld")
+
+result = client.add_users_to_account(account, [user1, user2])
+if isinstance(result, Success):
+    print(result.request_id)  # str
+    print(result.calls_remaining)  # int
+    print(result.data)  # None
+```
+
+#### Remove user(s) from an account
+
+Please note that journy.io makes a difference between removing and deleting:
+
+- Removing: when removing a user, the user will still be stored but marked as "removed".
+- Deleting: when deleting an user, the user will not be stored anymore.
+
+```python
+from journyio.account_identified import AccountIdentified
+from journyio.user_identified import UserIdentified
+
+account = AccountIdentified.by_domain("www.domain.tld")
+
+user1 = UserIdentified.by_user_id("memberId1")
+user2 = UserIdentified.by_email("member2@domain.tld")
+
+result = client.remove_users_from_account(account, [user1, user2])
+if isinstance(result, Success):
+    print(result.request_id)  # str
+    print(result.calls_remaining)  # int
+    print(result.data)  # None
+```
+
 #### Link web visitor to an app user
 
 You can link a web visitor to a user in your application when you have our snippet installed on your website. The
