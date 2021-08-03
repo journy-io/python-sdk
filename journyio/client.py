@@ -11,7 +11,7 @@ from .results import Failure, Success, ApiKeyDetails, TrackingSnippetResponse
 from .utils import JournyException, status_code_to_api_error, assert_journy
 from .user_identified import UserIdentified
 from .account_identified import AccountIdentified
-
+from .version import version
 
 class Properties(dict):
 
@@ -90,6 +90,7 @@ class Client(object):
     def __get_headers(self) -> HttpHeaders:
         headers = HttpHeaders()
         headers["Content-Type"] = "application/json"
+        headers["User-Agent"] = f"python-sdk/{version}"
         headers["x-api-key"] = self.config.api_key
         return headers
 
