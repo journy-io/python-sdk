@@ -153,13 +153,12 @@ class Client(object):
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
-    def upsert_account(self, account: AccountIdentified, properties: Properties, members: List[UserIdentified]) -> \
+    def upsert_account(self, account: AccountIdentified, properties: Properties or None) -> \
         Success[
             None] or Failure:
         assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
-        assert_journy(isinstance(properties, Properties), "Properties is not a Properties object.")
-        for member in members:
-            assert_journy(isinstance(member, UserIdentified), f"Member {member} is not a UserIdentified object.")
+        if properties is not None:
+            assert_journy(isinstance(properties, Properties), "Properties is not a Properties object.")
 
         try:
             request = HttpRequest(self.__create_url("/accounts/upsert"), Method.POST,
@@ -167,8 +166,6 @@ class Client(object):
                                   json.dumps({
                                       "identification": account.format_identification(),
                                       "properties": properties.properties,
-                                      "members": [{"identification": member.format_identification()} for member in
-                                                  members]
                                   }))
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
