@@ -118,10 +118,7 @@ properties["array_of_values"] = ["value1", "value2"]
 properties["key_with_empty_value"] = ""
 properties["this_property_will_be_deleted"] = None
 
-member1 = UserIdentified.by_user_id("memberId1")
-member2 = UserIdentified.by_user_id("memberId2")
-
-result = client.upsert_account(account, properties, [member1, member2])
+result = client.upsert_account(account, properties)
 if isinstance(result, Success):
     print(result.request_id)  # str
     print(result.calls_remaining)  # int

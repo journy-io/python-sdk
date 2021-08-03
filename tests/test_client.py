@@ -159,7 +159,7 @@ def test_client_upsert_account():
     member1 = UserIdentified.by_user_id("hansId")
     member2 = UserIdentified.by_user_id("manuId")
 
-    response = client.upsert_account(account, properties, [member1, member2])
+    response = client.upsert_account(account, properties)
 
     assert (isinstance(response, Success))
     assert (response.__str__() == "Success(requestId, 4999, None)")
@@ -168,7 +168,7 @@ def test_client_upsert_account():
     assert (response.data is None)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/upsert, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"domain": "www.journy.io", "accountId": "account_id"}, "properties": {"havedog": false, "name": "Journy"}, "members": [{"identification": {"userId": "hansId"}}, {"identification": {"userId": "manuId"}}]})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/upsert, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"domain": "www.journy.io", "accountId": "account_id"}, "properties": {"havedog": false, "name": "Journy"}})')
 
 def test_client_add_users_to_account():
     http_client_testing = HttpClientTesting(created_response)
