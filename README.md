@@ -118,10 +118,45 @@ properties["array_of_values"] = ["value1", "value2"]
 properties["key_with_empty_value"] = ""
 properties["this_property_will_be_deleted"] = None
 
-member1 = UserIdentified.by_user_id("memberId1")
-member2 = UserIdentified.by_user_id("memberId2")
+result = client.upsert_account(account, properties)
+if isinstance(result, Success):
+    print(result.request_id)  # str
+    print(result.calls_remaining)  # int
+    print(result.data)  # None
+```
 
-result = client.upsert_account(account, properties, [member1, member2])
+#### Add user(s) to an account
+
+```python
+from journyio.account_identified import AccountIdentified
+from journyio.user_identified import UserIdentified
+
+account = AccountIdentified.by_account_id("accountId")
+
+user1 = UserIdentified.by_user_id("memberId1")
+user2 = UserIdentified.by_email("member2@domain.tld")
+
+result = client.add_users_to_account(account, [user1, user2])
+if isinstance(result, Success):
+    print(result.request_id)  # str
+    print(result.calls_remaining)  # int
+    print(result.data)  # None
+```
+
+#### Remove user(s) from an account
+
+When removing a user, the user will still be stored in journy.io, but marked as "removed".
+
+```python
+from journyio.account_identified import AccountIdentified
+from journyio.user_identified import UserIdentified
+
+account = AccountIdentified.by_domain("www.domain.tld")
+
+user1 = UserIdentified.by_user_id("memberId1")
+user2 = UserIdentified.by_email("member2@domain.tld")
+
+result = client.remove_users_from_account(account, [user1, user2])
 if isinstance(result, Success):
     print(result.request_id)  # str
     print(result.calls_remaining)  # int

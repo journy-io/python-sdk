@@ -155,13 +155,12 @@ class Client(object):
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
-    def upsert_account(self, account: AccountIdentified, properties: Properties, members: List[UserIdentified]) -> \
+    def upsert_account(self, account: AccountIdentified, properties: Properties or None) -> \
         Success[
             None] or Failure:
         assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
-        assert_journy(isinstance(properties, Properties), "Properties is not a Properties object.")
-        for member in members:
-            assert_journy(isinstance(member, UserIdentified), f"Member {member} is not a UserIdentified object.")
+        if properties is not None:
+            assert_journy(isinstance(properties, Properties), "Properties is not a Properties object.")
 
         try:
             request = HttpRequest(self.__create_url("/accounts/upsert"), Method.POST,
@@ -169,8 +168,56 @@ class Client(object):
                                   json.dumps({
                                       "identification": account.format_identification(),
                                       "properties": properties.properties,
-                                      "members": [{"identification": member.format_identification()} for member in
-                                                  members]
+                                  }))
+            response = self.httpclient.send(request)
+            calls_remaining = Client.__parse_calls_remaining(response)
+            if not (200 <= response.status_code < 300):
+                return Failure(response.body["meta"]["requestId"], calls_remaining,
+                               status_code_to_api_error(response.status_code))
+            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
+        except JournyException as e:
+            raise e
+        except Exception:
+            raise JournyException(f"An unknown error has occurred")
+
+    def add_users_to_account(self, account: AccountIdentified, users: List[UserIdentified]) -> \
+        Success[
+            None] or Failure:
+        assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
+        for user in users:
+            assert_journy(isinstance(user, UserIdentified), f"User {user} is not a UserIdentified object.")
+
+        try:
+            request = HttpRequest(self.__create_url("/accounts/users/add"), Method.POST,
+                                  self.__get_headers(),
+                                  json.dumps({
+                                      "account": account.format_identification(),
+                                      "users": [user.format_identification() for user in users]
+                                  }))
+            response = self.httpclient.send(request)
+            calls_remaining = Client.__parse_calls_remaining(response)
+            if not (200 <= response.status_code < 300):
+                return Failure(response.body["meta"]["requestId"], calls_remaining,
+                               status_code_to_api_error(response.status_code))
+            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
+        except JournyException as e:
+            raise e
+        except Exception:
+            raise JournyException(f"An unknown error has occurred")
+
+    def remove_users_from_account(self, account: AccountIdentified, users: List[UserIdentified]) -> \
+        Success[
+            None] or Failure:
+        assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
+        for user in users:
+            assert_journy(isinstance(user, UserIdentified), f"User {user} is not a UserIdentified object.")
+
+        try:
+            request = HttpRequest(self.__create_url("/accounts/users/remove"), Method.POST,
+                                  self.__get_headers(),
+                                  json.dumps({
+                                      "account": account.format_identification(),
+                                      "users": [user.format_identification() for user in users]
                                   }))
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
