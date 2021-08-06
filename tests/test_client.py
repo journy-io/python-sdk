@@ -104,7 +104,7 @@ def test_client_add_event():
     assert (response.data is None)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"user": {"email": "user@journy.io", "userId": "user_id"}, "account": {"domain": "www.journy.io", "accountId": "account_id"}}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"identification": {"user": {"email": "user@journy.io", "userId": "user_id"}, "account": {"domain": "www.journy.io", "accountId": "account_id"}}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})')
 
 
 def test_client_add_event_with_failure():
@@ -121,7 +121,7 @@ def test_client_add_event_with_failure():
     assert (response.error is APIError.TooManyRequests)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"user": {"email": "user@journy.io", "userId": "user_id"}, "account": {"domain": "www.journy.io", "accountId": "account_id"}}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"identification": {"user": {"email": "user@journy.io", "userId": "user_id"}, "account": {"domain": "www.journy.io", "accountId": "account_id"}}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})')
 
 
 def test_client_upsert_user():
@@ -143,7 +143,7 @@ def test_client_upsert_user():
     assert (response.data is None)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/users/upsert, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"email": "user@journy.io", "userId": "user_id"}, "properties": {"hasdog": false, "name": "Manu"}})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/users/upsert, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"identification": {"email": "user@journy.io", "userId": "user_id"}, "properties": {"hasdog": false, "name": "Manu"}})')
 
 
 def test_client_upsert_account():
@@ -168,7 +168,7 @@ def test_client_upsert_account():
     assert (response.data is None)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/upsert, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"identification": {"domain": "www.journy.io", "accountId": "account_id"}, "properties": {"havedog": false, "name": "Journy"}})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/upsert, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"identification": {"domain": "www.journy.io", "accountId": "account_id"}, "properties": {"havedog": false, "name": "Journy"}})')
 
 def test_client_add_users_to_account():
     http_client_testing = HttpClientTesting(created_response)
@@ -188,7 +188,7 @@ def test_client_add_users_to_account():
     assert (response.data is None)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/users/add, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"account": {"domain": "www.journy.io", "accountId": "account_id"}, "users": [{"userId": "hansId"}, {"email": "manu@journy.io"}]})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/users/add, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"account": {"domain": "www.journy.io", "accountId": "account_id"}, "users": [{"userId": "hansId"}, {"email": "manu@journy.io"}]})')
 
 def test_client_remove_users_from_account():
     http_client_testing = HttpClientTesting(created_response)
@@ -208,7 +208,7 @@ def test_client_remove_users_from_account():
     assert (response.data is None)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/users/remove, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"account": {"domain": "www.journy.io", "accountId": "account_id"}, "users": [{"userId": "hansId"}, {"email": "manu@journy.io"}]})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/users/remove, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"account": {"domain": "www.journy.io", "accountId": "account_id"}, "users": [{"userId": "hansId"}, {"email": "manu@journy.io"}]})')
 
 
 def test_client_link():
@@ -226,7 +226,7 @@ def test_client_link():
     assert (response.data is None)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/link, Method.POST, {"content-type": "application/json", "x-api-key": "api-key"}, {"deviceId": "device_id", "identification": {"email": "user@journy.io", "userId": "user_id"}})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/link, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"deviceId": "device_id", "identification": {"email": "user@journy.io", "userId": "user_id"}})')
 
 
 def test_client_get_tracking_snippet():
@@ -245,7 +245,7 @@ def test_client_get_tracking_snippet():
     assert (isinstance(response.data, TrackingSnippetResponse))
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/tracking/snippet?domain=journy.io, Method.GET, {"content-type": "application/json", "x-api-key": "api-key"}, None)')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/tracking/snippet?domain=journy.io, Method.GET, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, None)')
 
 
 def test_client_get_api_key_details():
@@ -264,4 +264,4 @@ def test_client_get_api_key_details():
     assert (isinstance(response.data, ApiKeyDetails))
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/validate, Method.GET, {"content-type": "application/json", "x-api-key": "api-key"}, None)')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/validate, Method.GET, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, None)')

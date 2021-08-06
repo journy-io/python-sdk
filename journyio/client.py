@@ -11,6 +11,7 @@ from .results import Failure, Success, ApiKeyDetails, TrackingSnippetResponse
 from .utils import JournyException, status_code_to_api_error, assert_journy
 from .user_identified import UserIdentified
 from .account_identified import AccountIdentified
+from .version import version
 
 
 class Properties(dict):
@@ -26,7 +27,7 @@ class Properties(dict):
     def __setitem__(self, key: str, value: str or List[str] or bool or int or datetime or None):
         assert_journy(isinstance(key, str), "The key is not a string.")
         if isinstance(value, str) or isinstance(value, int) or isinstance(value, bool) or isinstance(value, datetime) \
-                or value is None or (isinstance(value, list) and all([isinstance(el, str) for el in value])):
+            or value is None or (isinstance(value, list) and all([isinstance(el, str) for el in value])):
             if isinstance(value, datetime):
                 value = str(value.isoformat())
             self.properties.__setitem__(key.lower().strip(), value)
@@ -90,6 +91,7 @@ class Client(object):
     def __get_headers(self) -> HttpHeaders:
         headers = HttpHeaders()
         headers["Content-Type"] = "application/json"
+        headers["User-Agent"] = f"python-sdk/{version}"
         headers["x-api-key"] = self.config.api_key
         return headers
 

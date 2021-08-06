@@ -24,6 +24,8 @@ jobs:
                 run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
             -   name: Update version to tag
                 run: python scripts/setversion.py setup.py "${{ steps.get_version.outputs.tag }}"
+            -   name: Create version file
+                run: python scripts/createversion.py "${{ steps.get_version.outputs.tag }}"
             -   name: Build package
                 run: python setup.py sdist bdist_wheel
             -   name: Publish distribution 📦to PyPI
