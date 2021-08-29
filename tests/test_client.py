@@ -188,7 +188,7 @@ def test_client_add_users_to_account():
     assert (response.data is None)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/users/add, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"account": {"domain": "www.journy.io", "accountId": "account_id"}, "users": [{"userId": "hansId"}, {"email": "manu@journy.io"}]})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/users/add, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"account": {"domain": "www.journy.io", "accountId": "account_id"}, "users": [{"identification": {"userId": "hansId"}}, {"identification": {"email": "manu@journy.io"}}]})')
 
 def test_client_remove_users_from_account():
     http_client_testing = HttpClientTesting(created_response)
@@ -208,7 +208,7 @@ def test_client_remove_users_from_account():
     assert (response.data is None)
 
     assert (
-        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/users/remove, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"account": {"domain": "www.journy.io", "accountId": "account_id"}, "users": [{"userId": "hansId"}, {"email": "manu@journy.io"}]})')
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/users/remove, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"account": {"domain": "www.journy.io", "accountId": "account_id"}, "users": [{"identification": {"userId": "hansId"}}, {"identification": {"email": "manu@journy.io"}}]})')
 
 
 def test_client_link():

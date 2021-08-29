@@ -192,7 +192,7 @@ class Client(object):
                                   self.__get_headers(),
                                   json.dumps({
                                       "account": account.format_identification(),
-                                      "users": [user.format_identification() for user in users]
+                                      "users": [{"identification": user.format_identification()} for user in users]
                                   }))
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
@@ -217,7 +217,7 @@ class Client(object):
                                   self.__get_headers(),
                                   json.dumps({
                                       "account": account.format_identification(),
-                                      "users": [user.format_identification() for user in users]
+                                      "users": [{"identification": user.format_identification()} for user in users]
                                   }))
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
