@@ -155,6 +155,26 @@ class Client(object):
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
+    def delete_user(self, user: UserIdentified) -> Success[None] or Failure:
+        assert_journy(isinstance(user, UserIdentified), "User is not a UserIdentified object.")
+
+        try:
+            request = HttpRequest(self.__create_url("/users"), Method.DELETE,
+                                  self.__get_headers(),
+                                  json.dumps({
+                                      "identification": user.format_identification()
+                                  }))
+            response = self.httpclient.send(request)
+            calls_remaining = Client.__parse_calls_remaining(response)
+            if not (200 <= response.status_code < 300):
+                return Failure(response.body["meta"]["requestId"], calls_remaining,
+                               status_code_to_api_error(response.status_code))
+            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
+        except JournyException as e:
+            raise e
+        except Exception:
+            raise JournyException(f"An unknown error has occurred")
+
     def upsert_account(self, account: AccountIdentified, properties: Properties or None) -> \
         Success[
             None] or Failure:
@@ -168,6 +188,28 @@ class Client(object):
                                   json.dumps({
                                       "identification": account.format_identification(),
                                       "properties": properties.properties,
+                                  }))
+            response = self.httpclient.send(request)
+            calls_remaining = Client.__parse_calls_remaining(response)
+            if not (200 <= response.status_code < 300):
+                return Failure(response.body["meta"]["requestId"], calls_remaining,
+                               status_code_to_api_error(response.status_code))
+            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
+        except JournyException as e:
+            raise e
+        except Exception:
+            raise JournyException(f"An unknown error has occurred")
+
+    def delete_account(self, account: AccountIdentified) -> \
+        Success[
+            None] or Failure:
+        assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
+
+        try:
+            request = HttpRequest(self.__create_url("/accounts"), Method.DELETE,
+                                  self.__get_headers(),
+                                  json.dumps({
+                                      "identification": account.format_identification(),
                                   }))
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
