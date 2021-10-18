@@ -63,6 +63,7 @@ def test_client():
 rate_limit_header = HttpHeaders()
 rate_limit_header["X-RateLimit-Remaining"] = "4999"
 created_response = HttpResponse(201, rate_limit_header, {"meta": {"requestId": "requestId"}})
+created_response_202 = HttpResponse(202, rate_limit_header, {"meta": {"requestId": "requestId"}})
 too_many_requests_response = HttpResponse(429, rate_limit_header, {"meta": {"requestId": "requestId"}})
 tracking_snippet_response = HttpResponse(200, rate_limit_header, {"data": {
     "domain": "journy.io",
@@ -145,6 +146,23 @@ def test_client_upsert_user():
     assert (
         http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/users/upsert, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"identification": {"email": "user@journy.io", "userId": "user_id"}, "properties": {"hasdog": false, "name": "Manu"}})')
 
+def test_client_delete_user():
+    http_client_testing = HttpClientTesting(created_response_202)
+    config = Config("api-key", "https://api.journy.io")
+
+    client = Client(http_client_testing, config)
+
+    response = client.delete_user(user)
+
+    assert (isinstance(response, Success))
+    assert (response.__str__() == "Success(requestId, 4999, None)")
+    assert (response.calls_remaining == 4999)
+    assert (response.request_id == "requestId")
+    assert (response.data is None)
+
+    assert (
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/users, Method.DELETE, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"identification": {"email": "user@journy.io", "userId": "user_id"}})')
+
 
 def test_client_upsert_account():
     http_client_testing = HttpClientTesting(created_response)
@@ -169,6 +187,23 @@ def test_client_upsert_account():
 
     assert (
         http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts/upsert, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"identification": {"domain": "www.journy.io", "accountId": "account_id"}, "properties": {"havedog": false, "name": "Journy"}})')
+
+def test_client_delete_account():
+    http_client_testing = HttpClientTesting(created_response_202)
+    config = Config("api-key", "https://api.journy.io")
+
+    client = Client(http_client_testing, config)
+
+    response = client.delete_account(account)
+
+    assert (isinstance(response, Success))
+    assert (response.__str__() == "Success(requestId, 4999, None)")
+    assert (response.calls_remaining == 4999)
+    assert (response.request_id == "requestId")
+    assert (response.data is None)
+
+    assert (
+        http_client_testing.received_request.__str__() == 'HttpRequest(https://api.journy.io/accounts, Method.DELETE, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"identification": {"domain": "www.journy.io", "accountId": "account_id"}})')
 
 def test_client_add_users_to_account():
     http_client_testing = HttpClientTesting(created_response)
