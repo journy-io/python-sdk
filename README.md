@@ -33,7 +33,7 @@ If you don't have an account yet, you can create one
 in [journy.io](https://system.journy.io/register?utm_source=github&utm_content=readme-python-sdk)
 or [request a demo first](https://www.journy.io/book-demo?utm_source=github&utm_content=readme-python-sdk).
 
-Go to your settings, under the *Connections*-tab, to create and edit API keys. Make sure to give the correct permissions
+Go to your settings, under the _Connections_-tab, to create and edit API keys. Make sure to give the correct permissions
 to the API Key.
 
 ```python
@@ -93,6 +93,26 @@ if isinstance(result, Success):
     print(result.data)  # None
 ```
 
+#### Delete user
+
+```python
+from journyio.client import Properties
+from journyio.user_identified import UserIdentified
+from datetime import datetime
+
+user = UserIdentified("userId", "name@domain.tld")
+# or
+user = UserIdentified.by_user_id("userId")
+# or
+user = UserIdentified.by_email("name@domain.tld")
+
+result = client.delete_user(user)
+if isinstance(result, Success):
+    print(result.request_id)  # str
+    print(result.calls_remaining)  # int
+    print(result.data)  # None
+```
+
 #### Create or update account
 
 Note: `name`, `mrr`, `plan` and `registered_at` are default properties
@@ -119,6 +139,26 @@ properties["key_with_empty_value"] = ""
 properties["this_property_will_be_deleted"] = None
 
 result = client.upsert_account(account, properties)
+if isinstance(result, Success):
+    print(result.request_id)  # str
+    print(result.calls_remaining)  # int
+    print(result.data)  # None
+```
+
+#### Delete account
+
+```python
+from journyio.account_identified import AccountIdentified
+from journyio.user_identified import UserIdentified
+from datetime import datetime
+
+account = AccountIdentified("accountId", "www.domain.tld")
+# or
+account = AccountIdentified.by_account_id("accountId")
+# or
+account = AccountIdentified.by_domain("www.domain.tld")
+
+result = client.delete_account(account)
 if isinstance(result, Success):
     print(result.request_id)  # str
     print(result.calls_remaining)  # int
@@ -187,7 +227,7 @@ if isinstance(result, Success):
 
 To get the cookies (for the `deviceId`) you can use:
 
-*Flask*
+_Flask_
 
 ```python
 @app.route('/...')
@@ -198,7 +238,7 @@ def method():
     ...
 ```
 
-*Django*
+_Django_
 
 ```python
 def method(request):
