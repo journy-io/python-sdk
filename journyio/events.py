@@ -6,8 +6,8 @@ from .utils import JournyException, assert_journy
 from .user_identified import UserIdentified
 from .account_identified import AccountIdentified
 
-class Metadata(dict):
 
+class Metadata(dict):
     def __init__(self):
         super().__init__()
         self.metadata = defaultdict(lambda _: None)
@@ -42,19 +42,36 @@ class Event(object):
     via the constructor. Not doing using them could lead to problems.
     """
 
-    def __init__(self, name: str, user: UserIdentified or None, account: AccountIdentified or None, date: str or None,
-                 metadata: Metadata):
+    def __init__(
+        self,
+        name: str,
+        user: UserIdentified or None,
+        account: AccountIdentified or None,
+        date: str or None,
+        metadata: Metadata,
+    ):
         assert_journy(name, "Event name cannot be empty.")
         assert_journy(isinstance(name, str), "The name is not a string.")
 
         if user:
-            assert_journy(isinstance(user, UserIdentified), "The user is not of type UserIdentified.")
+            assert_journy(
+                isinstance(user, UserIdentified),
+                "The user is not of type UserIdentified.",
+            )
         if account:
-            assert_journy(isinstance(account, AccountIdentified), "The account is not of type AccountIdentified.")
+            assert_journy(
+                isinstance(account, AccountIdentified),
+                "The account is not of type AccountIdentified.",
+            )
         if date:
-            assert_journy(isinstance(date, datetime.datetime), "The date is not a datetime object.")
+            assert_journy(
+                isinstance(date, datetime.datetime),
+                "The date is not a datetime object.",
+            )
 
-        assert_journy(isinstance(metadata, Metadata), "The metadata should be a Metadata object")
+        assert_journy(
+            isinstance(metadata, Metadata), "The metadata should be a Metadata object"
+        )
         assert_journy(user or account, "User and account can not both be empty.")
 
         self.name = name
@@ -67,7 +84,9 @@ class Event(object):
         return Event(self.name, self.user, self.account, date, self.metadata)
 
     def with_metadata(self, metadata: Metadata):
-        return Event(self.name, self.user, self.account, self.date, self.metadata.union(metadata))
+        return Event(
+            self.name, self.user, self.account, self.date, self.metadata.union(metadata)
+        )
 
     @staticmethod
     def for_user(name: str, user: UserIdentified):
@@ -80,7 +99,9 @@ class Event(object):
         return Event(name, None, account, None, Metadata())
 
     @staticmethod
-    def for_user_in_account(name: str, user: UserIdentified, account: AccountIdentified):
+    def for_user_in_account(
+        name: str, user: UserIdentified, account: AccountIdentified
+    ):
         assert_journy(account and user, "User and account can not be empty!")
         return Event(name, user, account, None, Metadata())
 

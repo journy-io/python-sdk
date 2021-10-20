@@ -14,9 +14,8 @@ class APIError(Enum):
 
 
 class JournyException(Exception):
-
     def __init__(self, msg: str):
-        assert (isinstance(msg, str))
+        assert isinstance(msg, str)
         super().__init__(msg)
 
         self.msg = msg
@@ -26,13 +25,17 @@ class JournyException(Exception):
 
 
 status_code_to_api_error_mapping = defaultdict(lambda: APIError.UnknownError)
-status_code_to_api_error_mapping.update({400: APIError.BadArgumentsError,
-                                         401: APIError.UnauthorizedError,
-                                         403: APIError.ForbiddenError,
-                                         404: APIError.NotFoundError,
-                                         422: APIError.UnprocessableError,
-                                         429: APIError.TooManyRequests,
-                                         500: APIError.ServerError})
+status_code_to_api_error_mapping.update(
+    {
+        400: APIError.BadArgumentsError,
+        401: APIError.UnauthorizedError,
+        403: APIError.ForbiddenError,
+        404: APIError.NotFoundError,
+        422: APIError.UnprocessableError,
+        429: APIError.TooManyRequests,
+        500: APIError.ServerError,
+    }
+)
 
 
 def status_code_to_api_error(status_code: int):

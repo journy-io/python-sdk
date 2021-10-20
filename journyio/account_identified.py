@@ -2,12 +2,15 @@ from .utils import assert_journy
 
 
 class AccountIdentified(object):
-
     def __init__(self, account_id: str or None, domain: str or None):
-        assert_journy(account_id or domain, "Account id and domain can not both be empty")
+        assert_journy(
+            account_id or domain, "Account id and domain can not both be empty"
+        )
 
         if account_id:
-            assert_journy(isinstance(account_id, str), "The account id is not a string.")
+            assert_journy(
+                isinstance(account_id, str), "The account id is not a string."
+            )
         if domain:
             assert_journy(isinstance(domain, str), "The domain is not a string.")
 

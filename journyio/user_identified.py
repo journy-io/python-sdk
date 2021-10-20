@@ -2,7 +2,6 @@ from .utils import assert_journy
 
 
 class UserIdentified(object):
-
     def __init__(self, user_id: str or None, email: str or None):
         assert_journy(user_id or email, "User id and email can not both be empty")
 

@@ -15,7 +15,6 @@ from .version import version
 
 
 class Properties(dict):
-
     def __init__(self):
         super().__init__()
         self.properties = defaultdict(lambda _: None)
@@ -24,15 +23,25 @@ class Properties(dict):
         assert_journy(isinstance(key, str), "The key is not a string.")
         return self.properties.get(key.lower().strip())
 
-    def __setitem__(self, key: str, value: str or List[str] or bool or int or datetime or None):
+    def __setitem__(
+        self, key: str, value: str or List[str] or bool or int or datetime or None
+    ):
         assert_journy(isinstance(key, str), "The key is not a string.")
-        if isinstance(value, str) or isinstance(value, int) or isinstance(value, bool) or isinstance(value, datetime) \
-            or value is None or (isinstance(value, list) and all([isinstance(el, str) for el in value])):
+        if (
+            isinstance(value, str)
+            or isinstance(value, int)
+            or isinstance(value, bool)
+            or isinstance(value, datetime)
+            or value is None
+            or (isinstance(value, list) and all([isinstance(el, str) for el in value]))
+        ):
             if isinstance(value, datetime):
                 value = str(value.isoformat())
             self.properties.__setitem__(key.lower().strip(), value)
         else:
-            raise JournyException("Value is not a string, number, boolean, datetime or None.")
+            raise JournyException(
+                "Value is not a string, number, boolean, datetime or None."
+            )
 
     def union(self, other):
         self.properties.update(other.properties)
@@ -73,7 +82,10 @@ class Client(object):
     """
 
     def __init__(self, httpclient: HttpClient, config: Config):
-        assert_journy(isinstance(httpclient, HttpClient), "The httpClient is not a HttpClient object.")
+        assert_journy(
+            isinstance(httpclient, HttpClient),
+            "The httpClient is not a HttpClient object.",
+        )
         assert_journy(isinstance(config, Config), "The config is not a Config object.")
 
         self.httpclient = httpclient
@@ -110,207 +122,332 @@ class Client(object):
             body = {
                 "identification": {},
                 "name": event.name,
-                "metadata": event.metadata.metadata
+                "metadata": event.metadata.metadata,
             }
             if event.date:
                 body["triggeredAt"] = event.date.isoformat()
             if event.user:
                 body["identification"]["user"] = event.user.format_identification()
             if event.account:
-                body["identification"]["account"] = event.account.format_identification()
+                body["identification"][
+                    "account"
+                ] = event.account.format_identification()
 
-            request = HttpRequest(self.__create_url("/events"), Method.POST,
-                                  self.__get_headers(),
-                                  json.dumps(body))
+            request = HttpRequest(
+                self.__create_url("/events"),
+                Method.POST,
+                self.__get_headers(),
+                json.dumps(body),
+            )
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
             if not (200 <= response.status_code < 300):
-                return Failure(response.body["meta"]["requestId"], calls_remaining,
-                               status_code_to_api_error(response.status_code))
-            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
+                return Failure(
+                    response.body["meta"]["requestId"],
+                    calls_remaining,
+                    status_code_to_api_error(response.status_code),
+                )
+            return Success[None](
+                response.body["meta"]["requestId"], calls_remaining, None
+            )
         except JournyException as e:
             raise e
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
-    def upsert_user(self, user: UserIdentified, properties: Properties) -> Success[None] or Failure:
-        assert_journy(isinstance(user, UserIdentified), "User is not a UserIdentified object.")
-        assert_journy(isinstance(properties, Properties), "Properties is not a Properties object.")
+    def upsert_user(
+        self, user: UserIdentified, properties: Properties
+    ) -> Success[None] or Failure:
+        assert_journy(
+            isinstance(user, UserIdentified), "User is not a UserIdentified object."
+        )
+        assert_journy(
+            isinstance(properties, Properties), "Properties is not a Properties object."
+        )
 
         try:
-            request = HttpRequest(self.__create_url("/users/upsert"), Method.POST,
-                                  self.__get_headers(),
-                                  json.dumps({
-                                      "identification": user.format_identification(),
-                                      "properties": properties.properties
-                                  }))
+            request = HttpRequest(
+                self.__create_url("/users/upsert"),
+                Method.POST,
+                self.__get_headers(),
+                json.dumps(
+                    {
+                        "identification": user.format_identification(),
+                        "properties": properties.properties,
+                    }
+                ),
+            )
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
             if not (200 <= response.status_code < 300):
-                return Failure(response.body["meta"]["requestId"], calls_remaining,
-                               status_code_to_api_error(response.status_code))
-            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
+                return Failure(
+                    response.body["meta"]["requestId"],
+                    calls_remaining,
+                    status_code_to_api_error(response.status_code),
+                )
+            return Success[None](
+                response.body["meta"]["requestId"], calls_remaining, None
+            )
         except JournyException as e:
             raise e
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
     def delete_user(self, user: UserIdentified) -> Success[None] or Failure:
-        assert_journy(isinstance(user, UserIdentified), "User is not a UserIdentified object.")
+        assert_journy(
+            isinstance(user, UserIdentified), "User is not a UserIdentified object."
+        )
 
         try:
-            request = HttpRequest(self.__create_url("/users"), Method.DELETE,
-                                  self.__get_headers(),
-                                  json.dumps({
-                                      "identification": user.format_identification()
-                                  }))
+            request = HttpRequest(
+                self.__create_url("/users"),
+                Method.DELETE,
+                self.__get_headers(),
+                json.dumps({"identification": user.format_identification()}),
+            )
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
             if not (200 <= response.status_code < 300):
-                return Failure(response.body["meta"]["requestId"], calls_remaining,
-                               status_code_to_api_error(response.status_code))
-            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
+                return Failure(
+                    response.body["meta"]["requestId"],
+                    calls_remaining,
+                    status_code_to_api_error(response.status_code),
+                )
+            return Success[None](
+                response.body["meta"]["requestId"], calls_remaining, None
+            )
         except JournyException as e:
             raise e
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
-    def upsert_account(self, account: AccountIdentified, properties: Properties or None) -> \
-        Success[
-            None] or Failure:
-        assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
+    def upsert_account(
+        self, account: AccountIdentified, properties: Properties or None
+    ) -> Success[None] or Failure:
+        assert_journy(
+            isinstance(account, AccountIdentified),
+            "Account is not an AccountIdentified object.",
+        )
         if properties is not None:
-            assert_journy(isinstance(properties, Properties), "Properties is not a Properties object.")
+            assert_journy(
+                isinstance(properties, Properties),
+                "Properties is not a Properties object.",
+            )
 
         try:
-            request = HttpRequest(self.__create_url("/accounts/upsert"), Method.POST,
-                                  self.__get_headers(),
-                                  json.dumps({
-                                      "identification": account.format_identification(),
-                                      "properties": properties.properties,
-                                  }))
+            request = HttpRequest(
+                self.__create_url("/accounts/upsert"),
+                Method.POST,
+                self.__get_headers(),
+                json.dumps(
+                    {
+                        "identification": account.format_identification(),
+                        "properties": properties.properties,
+                    }
+                ),
+            )
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
             if not (200 <= response.status_code < 300):
-                return Failure(response.body["meta"]["requestId"], calls_remaining,
-                               status_code_to_api_error(response.status_code))
-            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
+                return Failure(
+                    response.body["meta"]["requestId"],
+                    calls_remaining,
+                    status_code_to_api_error(response.status_code),
+                )
+            return Success[None](
+                response.body["meta"]["requestId"], calls_remaining, None
+            )
         except JournyException as e:
             raise e
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
-    def delete_account(self, account: AccountIdentified) -> \
-        Success[
-            None] or Failure:
-        assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
+    def delete_account(self, account: AccountIdentified) -> Success[None] or Failure:
+        assert_journy(
+            isinstance(account, AccountIdentified),
+            "Account is not an AccountIdentified object.",
+        )
 
         try:
-            request = HttpRequest(self.__create_url("/accounts"), Method.DELETE,
-                                  self.__get_headers(),
-                                  json.dumps({
-                                      "identification": account.format_identification(),
-                                  }))
+            request = HttpRequest(
+                self.__create_url("/accounts"),
+                Method.DELETE,
+                self.__get_headers(),
+                json.dumps(
+                    {
+                        "identification": account.format_identification(),
+                    }
+                ),
+            )
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
             if not (200 <= response.status_code < 300):
-                return Failure(response.body["meta"]["requestId"], calls_remaining,
-                               status_code_to_api_error(response.status_code))
-            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
+                return Failure(
+                    response.body["meta"]["requestId"],
+                    calls_remaining,
+                    status_code_to_api_error(response.status_code),
+                )
+            return Success[None](
+                response.body["meta"]["requestId"], calls_remaining, None
+            )
         except JournyException as e:
             raise e
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
-    def add_users_to_account(self, account: AccountIdentified, users: List[UserIdentified]) -> \
-        Success[
-            None] or Failure:
-        assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
+    def add_users_to_account(
+        self, account: AccountIdentified, users: List[UserIdentified]
+    ) -> Success[None] or Failure:
+        assert_journy(
+            isinstance(account, AccountIdentified),
+            "Account is not an AccountIdentified object.",
+        )
         for user in users:
-            assert_journy(isinstance(user, UserIdentified), f"User {user} is not a UserIdentified object.")
+            assert_journy(
+                isinstance(user, UserIdentified),
+                f"User {user} is not a UserIdentified object.",
+            )
 
         try:
-            request = HttpRequest(self.__create_url("/accounts/users/add"), Method.POST,
-                                  self.__get_headers(),
-                                  json.dumps({
-                                      "account": account.format_identification(),
-                                      "users": [{"identification": user.format_identification()} for user in users]
-                                  }))
+            request = HttpRequest(
+                self.__create_url("/accounts/users/add"),
+                Method.POST,
+                self.__get_headers(),
+                json.dumps(
+                    {
+                        "account": account.format_identification(),
+                        "users": [
+                            {"identification": user.format_identification()}
+                            for user in users
+                        ],
+                    }
+                ),
+            )
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
             if not (200 <= response.status_code < 300):
-                return Failure(response.body["meta"]["requestId"], calls_remaining,
-                               status_code_to_api_error(response.status_code))
-            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
+                return Failure(
+                    response.body["meta"]["requestId"],
+                    calls_remaining,
+                    status_code_to_api_error(response.status_code),
+                )
+            return Success[None](
+                response.body["meta"]["requestId"], calls_remaining, None
+            )
         except JournyException as e:
             raise e
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
-    def remove_users_from_account(self, account: AccountIdentified, users: List[UserIdentified]) -> \
-        Success[
-            None] or Failure:
-        assert_journy(isinstance(account, AccountIdentified), "Account is not an AccountIdentified object.")
+    def remove_users_from_account(
+        self, account: AccountIdentified, users: List[UserIdentified]
+    ) -> Success[None] or Failure:
+        assert_journy(
+            isinstance(account, AccountIdentified),
+            "Account is not an AccountIdentified object.",
+        )
         for user in users:
-            assert_journy(isinstance(user, UserIdentified), f"User {user} is not a UserIdentified object.")
+            assert_journy(
+                isinstance(user, UserIdentified),
+                f"User {user} is not a UserIdentified object.",
+            )
 
         try:
-            request = HttpRequest(self.__create_url("/accounts/users/remove"), Method.POST,
-                                  self.__get_headers(),
-                                  json.dumps({
-                                      "account": account.format_identification(),
-                                      "users": [{"identification": user.format_identification()} for user in users]
-                                  }))
+            request = HttpRequest(
+                self.__create_url("/accounts/users/remove"),
+                Method.POST,
+                self.__get_headers(),
+                json.dumps(
+                    {
+                        "account": account.format_identification(),
+                        "users": [
+                            {"identification": user.format_identification()}
+                            for user in users
+                        ],
+                    }
+                ),
+            )
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
             if not (200 <= response.status_code < 300):
-                return Failure(response.body["meta"]["requestId"], calls_remaining,
-                               status_code_to_api_error(response.status_code))
-            return Success[None](response.body["meta"]["requestId"], calls_remaining, None)
+                return Failure(
+                    response.body["meta"]["requestId"],
+                    calls_remaining,
+                    status_code_to_api_error(response.status_code),
+                )
+            return Success[None](
+                response.body["meta"]["requestId"], calls_remaining, None
+            )
         except JournyException as e:
             raise e
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
     def link(self, user: UserIdentified, device_id: str) -> Success[None] or Failure:
-        assert_journy(isinstance(user, UserIdentified), "The user is not a UserIdentified object.")
+        assert_journy(
+            isinstance(user, UserIdentified), "The user is not a UserIdentified object."
+        )
         assert_journy(isinstance(device_id, str), "The device id is not a string.")
 
         try:
-            request = HttpRequest(self.__create_url("/link"), Method.POST,
-                                  self.__get_headers(), json.dumps({
-                    "deviceId": device_id,
-                    "identification": user.format_identification()
-                }))
+            request = HttpRequest(
+                self.__create_url("/link"),
+                Method.POST,
+                self.__get_headers(),
+                json.dumps(
+                    {
+                        "deviceId": device_id,
+                        "identification": user.format_identification(),
+                    }
+                ),
+            )
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
 
             if not (200 <= response.status_code < 300):
-                return Failure(response.body["meta"]["requestId"], calls_remaining,
-                               status_code_to_api_error(response.status_code))
-            return Success[None](response.body["meta"]["requestId"], calls_remaining,
-                                 None)
+                return Failure(
+                    response.body["meta"]["requestId"],
+                    calls_remaining,
+                    status_code_to_api_error(response.status_code),
+                )
+            return Success[None](
+                response.body["meta"]["requestId"], calls_remaining, None
+            )
         except JournyException as e:
             raise e
         except Exception:
             raise JournyException(f"An unknown error has occurred")
 
-    def get_tracking_snippet(self, domain: str) -> Success[TrackingSnippetResponse] or Failure:
+    def get_tracking_snippet(
+        self, domain: str
+    ) -> Success[TrackingSnippetResponse] or Failure:
         assert_journy(isinstance(domain, str), "domain should be a string.")
 
         try:
-            request = HttpRequest(self.__create_url("/tracking/snippet?domain={}".format(parse.quote_plus(domain))),
-                                  Method.GET,
-                                  self.__get_headers(), None)
+            request = HttpRequest(
+                self.__create_url(
+                    "/tracking/snippet?domain={}".format(parse.quote_plus(domain))
+                ),
+                Method.GET,
+                self.__get_headers(),
+                None,
+            )
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
 
             if not (200 <= response.status_code < 300):
-                return Failure(response.body["meta"]["requestId"], calls_remaining,
-                               status_code_to_api_error(response.status_code))
-            return Success[TrackingSnippetResponse](response.body["meta"]["requestId"], calls_remaining,
-                                                    TrackingSnippetResponse(response.body["data"]["domain"],
-                                                                            response.body["data"]["snippet"]))
+                return Failure(
+                    response.body["meta"]["requestId"],
+                    calls_remaining,
+                    status_code_to_api_error(response.status_code),
+                )
+            return Success[TrackingSnippetResponse](
+                response.body["meta"]["requestId"],
+                calls_remaining,
+                TrackingSnippetResponse(
+                    response.body["data"]["domain"], response.body["data"]["snippet"]
+                ),
+            )
         except JournyException as e:
             raise e
         except Exception:
@@ -318,16 +455,23 @@ class Client(object):
 
     def get_api_key_details(self) -> Success[ApiKeyDetails] or Failure:
         try:
-            request = HttpRequest(self.__create_url("/validate"), Method.GET,
-                                  self.__get_headers(), None)
+            request = HttpRequest(
+                self.__create_url("/validate"), Method.GET, self.__get_headers(), None
+            )
             response = self.httpclient.send(request)
             calls_remaining = Client.__parse_calls_remaining(response)
 
             if not (200 <= response.status_code < 300):
-                return Failure(response.body["meta"]["requestId"], calls_remaining,
-                               status_code_to_api_error(response.status_code))
-            return Success[ApiKeyDetails](response.body["meta"]["requestId"], calls_remaining,
-                                          ApiKeyDetails(response.body["data"]["permissions"]))
+                return Failure(
+                    response.body["meta"]["requestId"],
+                    calls_remaining,
+                    status_code_to_api_error(response.status_code),
+                )
+            return Success[ApiKeyDetails](
+                response.body["meta"]["requestId"],
+                calls_remaining,
+                ApiKeyDetails(response.body["data"]["permissions"]),
+            )
         except JournyException as e:
             raise e
         except Exception:
