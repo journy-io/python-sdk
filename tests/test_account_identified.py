@@ -9,9 +9,12 @@ def test_user_identified():
     user2 = AccountIdentified.by_account_id("account_id")
     user3 = AccountIdentified.by_domain("domain")
 
-    assert (user1.format_identification() == {"accountId": "account_id", "domain": "domain"})
-    assert (user2.format_identification() == {"accountId": "account_id"})
-    assert (user3.format_identification() == {"domain": "domain"})
+    assert user1.format_identification() == {
+        "accountId": "account_id",
+        "domain": "domain",
+    }
+    assert user2.format_identification() == {"accountId": "account_id"}
+    assert user3.format_identification() == {"domain": "domain"}
 
     with pytest.raises(JournyException):
         AccountIdentified("", "")
