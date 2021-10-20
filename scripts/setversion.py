@@ -5,7 +5,14 @@ import sys
 def rename_version(filename, new_version):
     with open(filename, "r") as file:
         lines = file.readlines()
-    lines = list(map(lambda str: re.sub(r'version="[0-9\.]*"', 'version="' + new_version + '"', str), lines))
+    lines = list(
+        map(
+            lambda str: re.sub(
+                r'version="[0-9\.]*"', 'version="' + new_version + '"', str
+            ),
+            lines,
+        )
+    )
     with open(filename, "w") as file:
         file.writelines(lines)
 

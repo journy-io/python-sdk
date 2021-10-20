@@ -3,7 +3,7 @@ import sys
 
 def create_version(version):
     with open("journyio/version.py", "w") as file:
-        file.write(f"version = \"{version}\"\n")
+        file.write(f'version = "{version}"\n')
 
 
 if __name__ == "__main__":

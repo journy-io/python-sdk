@@ -2,13 +2,11 @@ name: Upload Python Package
 
 on:
     release:
-        types: [ created ]
+        types: [created]
 
 jobs:
-    deploy:
-
+    publish:
         runs-on: ubuntu-latest
-
         steps:
             -   uses: actions/checkout@v2
             -   name: Set up Python

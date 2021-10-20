@@ -1,9 +1,7 @@
-name: Lint
-
+name: Check code style
 on: push
-
 jobs:
-    lint:
+    check-code-style:
         runs-on: ubuntu-latest
         timeout-minutes: 15
         steps:
