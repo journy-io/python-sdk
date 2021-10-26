@@ -2,7 +2,7 @@
 
 # journy.io Python SDK
 
-[![pypi](https://img.shields.io/pypi/v/journyio-sdk?color=%234d84f5&style=flat-square)](https://pypi.org/project/journyio-sdk) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![pypi](https://img.shields.io/pypi/v/journyio-sdk?color=%234d84f5&style=flat-square)](https://pypi.org/project/journyio-sdk) ![pypi downloads](https://img.shields.io/pypi/dm/journyio-sdk?color=%234d84f5&style=flat-square) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 This is the official Python SDK for [journy.io](https://journy.io?utm_source=github&utm_content=readme-python-sdk).
 
