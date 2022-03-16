@@ -329,7 +329,9 @@ To run the tests:
 
 ```bash
 cd tests
-pip3 install -r requirements.txt
+pip install -r requirements.txt
+pip install -U pytest
+python scripts/createversion.py 0.0.0
 pytest
 ```
 
