@@ -130,7 +130,7 @@ def test_client_add_event():
 
     assert (
         http_client_testing.received_request.__str__()
-        == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"identification": {"user": {"email": "user@journy.io", "userId": "user_id"}, "account": {"domain": "www.journy.io", "accountId": "account_id"}}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})'
+        == 'HttpRequest(https://api.journy.io/track, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"identification": {"user": {"email": "user@journy.io", "userId": "user_id"}, "account": {"domain": "www.journy.io", "accountId": "account_id"}}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})'
     )
 
 
@@ -149,7 +149,7 @@ def test_client_add_event_with_failure():
 
     assert (
         http_client_testing.received_request.__str__()
-        == 'HttpRequest(https://api.journy.io/events, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"identification": {"user": {"email": "user@journy.io", "userId": "user_id"}, "account": {"domain": "www.journy.io", "accountId": "account_id"}}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})'
+        == 'HttpRequest(https://api.journy.io/track, Method.POST, {"content-type": "application/json", "user-agent": "python-sdk/0.0.0", "x-api-key": "api-key"}, {"identification": {"user": {"email": "user@journy.io", "userId": "user_id"}, "account": {"domain": "www.journy.io", "accountId": "account_id"}}, "name": "login", "metadata": {"true": true, "key": "value"}, "triggeredAt": "2020-11-02T13:37:40"})'
     )
 
 

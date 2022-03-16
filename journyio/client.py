@@ -134,7 +134,7 @@ class Client(object):
                 ] = event.account.format_identification()
 
             request = HttpRequest(
-                self.__create_url("/events"),
+                self.__create_url("/track"),
                 Method.POST,
                 self.__get_headers(),
                 json.dumps(body),
